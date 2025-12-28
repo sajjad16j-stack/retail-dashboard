@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Company Roadmap (24 Months)</title>
+<script src="chart-data.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root { --months: 24; }
+
+* { box-sizing: border-box; user-select: none; }
+
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #f4f6fb;
+}
+
+header {
+  background: #0f172a;
+  color: white;
+  padding: 8px 16px;   /* هدر جمع و جورتر */
+  font-size: 14px;
+}
+
+header h2 {
+  margin: 0;
+  font-size: 16px;     /* کمی کوچک‌تر */
+}
+
+.gantt { padding: 24px; }
+
+.timeline,
+.row {
+  display: grid;
+  grid-template-columns: 300px repeat(var(--months), minmax(20px, 1fr));
+  /* ستون فعالیت‌ها = 300px (کافی برای متن طولانی) */
+  /* ستون ماه‌ها = حداقل 20px، حداکثر فضای باقی‌مانده */
+}
+
+.timeline div {
+  text-align: center;
+  font-size: 12px;
+  padding: 6px 0;
+  background: #f1f5f9;
+  border-right: 1px solid #e5e7eb;
+  position: relative;
+}
+
+.year-marker {
+  position: absolute;
+  top: 0;
+  bottom: -1000px;
+  width: 0;
+  border-left: 2px dashed #94a3b8;
+}
+
+.year-marker.y2 {
+  border-left: 3px solid #64748b;
+}
+
+/* سرستون‌ها */
+.row-label {
+  padding: 10px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+  cursor: pointer;
+
+  white-space: normal; /* اجازه نمایش متن کامل */
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.row-label.hidden { opacity: 0.4; }
+
+.row-label.highlight {
+  background: rgba(250, 205, 21, 0.4); /* ملایم‌تر */
+  color: #000;
+}
+/* Highlight سرستون‌ها هنگام hover */
+.row-label:hover {
+  background: rgba(250, 205, 21, 0.3);
+  color: #000;
+}
+
+
+/* آیتم‌ها */
+.bar {
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: grab;
+  overflow: hidden;
+}
+
+.bar span { display: none; } /* متن حذف شد */
+
+.handle {
+  position: absolute;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+  background: rgba(255,255,255,0.6);
+}
+
+.hidden-bar { display: none; }
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>📅 Company Roadmap (24 Months)</h2>
+</header>
+
+<div class="gantt" id="gantt"></div>
+
+<script>
+const gantt = document.getElementById("gantt");
+const MONTHS = 24;
+
+let dragging = null;
+let resizing = null;
+
+// ---------- Helpers ----------
+function monthIndex(date) {
+  const d = new Date(date);
+  return (d.getFullYear() - ganttData.startYear) * 12 + d.getMonth();
+}
+
+function addMonths(dateStr, m) {
+  const d = new Date(dateStr);
+  d.setMonth(d.getMonth() + m);
+  return d.toISOString().slice(0,10);
+}
+
+// ---------- Render ----------
+function render() {
+  gantt.innerHTML = "";
+
+  ganttData.activities.sort((a,b) => {
+    if(a.visible !== b.visible) return a.visible?-1:1;
+    return new Date(a.start)-new Date(b.start);
+  });
+
+  const header = document.createElement("div");
+  header.className = "timeline";
+header.innerHTML =
+  `<div>Activity</div>` +
+  Array.from({ length: MONTHS }).map((_, i) => {
+    return `<div>M${i+1}</div>`;
+  }).join("");
+
+
+
+  gantt.appendChild(header);
+
+  ganttData.activities.forEach(item=>{
+    const row = document.createElement("div");
+    row.className="row";
+
+    const label = document.createElement("div");
+    label.className="row-label"+(item.visible?"":" hidden");
+    label.textContent=item.title;
+    label.onclick=()=>{ item.visible=!item.visible; render(); };
+    row.appendChild(label);
+
+    const bar=createBar(item);
+    if(!item.visible) bar.classList.add("hidden-bar");
+    row.appendChild(bar);
+
+    gantt.appendChild(row);
+  });
+}
+
+// ---------- Bar ----------
+function createBar(item){
+  const bar=document.createElement("div");
+  bar.className="bar";
+  bar.style.background=item.color;
+
+  updateBarPosition(bar,item);
+  bar.title=item.title; // tooltip
+
+  const handle=document.createElement("div");
+  handle.className="handle";
+  bar.appendChild(handle);
+
+  enableDrag(bar,item);
+  enableResize(handle,item);
+  enableHighlight(bar,item);
+
+  return bar;
+}
+
+function updateBarPosition(bar,item){
+  const start = monthIndex(item.startPreview||item.start);
+  const end = Math.max(start+1,monthIndex(item.endPreview||item.end));
+  bar.style.gridColumn=`${start+2} / ${end+2}`;
+}
+
+// ---------- Highlight ----------
+function getLabelByTitle(title){
+  return Array.from(gantt.querySelectorAll(".row-label"))
+    .find(lbl=>lbl.textContent===title);
+}
+
+function enableHighlight(bar,item){
+  bar.onmouseenter=()=>{
+    const label=getLabelByTitle(item.title);
+    if(label) label.classList.add("highlight");
+  };
+  bar.onmouseleave=()=>{
+    const label=getLabelByTitle(item.title);
+    if(label) label.classList.remove("highlight");
+  };
+}
+
+// ---------- Drag (X-axis locked, اصلاح باگ) ----------
+function enableDrag(bar,item){
+  bar.onmousedown=e=>{
+    if(e.target.classList.contains("handle")) return;
+    dragging={ 
+      item, 
+      startX:e.clientX, 
+      origStart: item.start, 
+      origEnd: item.end
+    };
+  };
+}
+
+// ---------- Resize ----------
+function enableResize(handle,item){
+  handle.onmousedown=e=>{
+    e.stopPropagation();
+    resizing={item,startX:e.clientX, origEnd: item.end};
+  };
+}
+
+// ---------- Mouse Events ----------
+document.addEventListener("mousemove", e=>{
+  if(dragging){
+    const dx=e.clientX-dragging.startX;
+    const deltaMonths=Math.round(dx/gantt.offsetWidth*MONTHS);
+    const startIndex=Math.max(0, monthIndex(dragging.origStart)+deltaMonths);
+    const endIndex=Math.max(startIndex+1, monthIndex(dragging.origEnd)+deltaMonths);
+    dragging.item.startPreview=addMonths(dragging.origStart,startIndex-monthIndex(dragging.origStart));
+    dragging.item.endPreview=addMonths(dragging.origEnd,endIndex-monthIndex(dragging.origEnd));
+    preview();
+  }
+
+  if(resizing){
+    const dx=e.clientX-resizing.startX;
+    const deltaMonths=Math.round(dx/gantt.offsetWidth*MONTHS);
+    const startIndex=monthIndex(resizing.item.start);
+    const newEnd=Math.max(startIndex+1, monthIndex(resizing.origEnd)+deltaMonths);
+    resizing.item.endPreview=addMonths(resizing.item.start,newEnd-startIndex);
+    preview();
+  }
+});
+
+document.addEventListener("mouseup", ()=>{
+  if(dragging){
+    dragging.item.start=dragging.item.startPreview;
+    dragging.item.end=dragging.item.endPreview;
+    dragging.item.startPreview=dragging.item.endPreview=null;
+    dragging=null;
+    render();
+  }
+  if(resizing){
+    resizing.item.end=resizing.item.endPreview;
+    resizing.item.endPreview=null;
+    resizing=null;
+    render();
+  }
+});
+
+// ---------- Preview ----------
+function preview(){
+  document.querySelectorAll(".bar").forEach(bar=>{
+    const title=bar.title;
+    const item=ganttData.activities.find(a=>a.title===title);
+    if(!item) return;
+
+    const start=monthIndex(item.startPreview||item.start);
+    const end=Math.max(start+1, monthIndex(item.endPreview||item.end));
+    bar.style.gridColumn=`${start+2} / ${end+2}`;
+  });
+}
+
+render();
+</script>
+</body>
+</html>
