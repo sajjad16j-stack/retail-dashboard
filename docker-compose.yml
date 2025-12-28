@@ -1,0 +1,7 @@
+version: '3.9'
+services:
+  landing:
+    build: .
+    ports:
+      - "1444:1444"
+    restart: unless-stopped
