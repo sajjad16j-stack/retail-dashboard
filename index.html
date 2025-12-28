@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BMC Dashboard Compare</title>
+<script src="data.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f6fb;
+  --sidebar: #0f172a;
+  --muted: #64748b;
+  --num-columns: 2; /* مقدار پیش‌فرض، JS قبل از رندر تغییر می‌دهد */
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  height: 100vh;
+  background: var(--bg);
+}
+
+/* Sidebar */
+aside {
+  width: 260px;
+  background: var(--sidebar);
+  color: white;
+  padding: 20px;
+  flex-shrink: 0;
+}
+aside h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+.company-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.company-item span {
+  cursor: pointer;
+}
+
+/* Main */
+main {
+  flex: 1;
+  padding: 24px;
+  overflow-x: auto;
+}
+
+/* Profile */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* Compare table wrapper for horizontal scroll */
+.compare-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Table */
+.compare-table {
+  border-collapse: collapse;
+  table-layout: fixed; /* ستون‌ها هم اندازه */
+  width: 100%;
+}
+
+.compare-table th,
+.compare-table td {
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  vertical-align: top;
+  width: calc(100% / var(--num-columns)); /* عرض مساوی */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.compare-table tr:hover {
+  background-color: #e0f2fe;
+}
+.single-company-table th {
+  color: #1f2937;
+  background-color: #f1f5f9;
+}
+
+/* Header company center, BMC column left */
+.compare-table thead th:not(:first-child) { text-align:center; }
+.compare-table tbody th:first-child { text-align:left; }
+
+/* Responsive */
+@media(max-width:800px){
+  .compare-table th, .compare-table td{
+    font-size:12px;
+    padding:8px;
+  }
+  .profile{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+</style>
+</head>
+<body>
+
+<aside>
+  <h2>Companies</h2>
+  <div id="companyList"></div>
+  <div style="margin-top:12px; font-size:13px; color:#cbd5f5;">
+    ✔ Select any number of companies to compare
+  </div>
+</aside>
+
+<main>
+  <div id="content"><h2>Select a company</h2></div>
+</main>
+
+<script>
+// ---------------- DATA EXAMPLE ----------------
+// فرض شده فایل data.js شامل آرایه companies است
+
+const list = document.getElementById("companyList");
+const content = document.getElementById("content");
+let selectedForCompare = [];
+
+// آرایه مرتب شده بر اساس حروف الفبا
+const sortedCompanies = [...companies].sort((a,b)=>a.business_info.name.localeCompare(b.business_info.name));
+
+const bmcIcons = {
+  key_partners: "🤝",
+  key_activities: "⚙️",
+  key_resources: "🧩",
+  value_propositions: "💎",
+  customer_relationships: "❤️",
+  channels: "📣",
+  customer_segments: "👥",
+  cost_structure: "💸",
+  revenue_streams: "💰"
+};
+
+// ---------- Sidebar ----------
+renderCompanyList();
+
+function renderCompanyList(){
+  list.innerHTML = "";
+
+  sortedCompanies.forEach((c,index)=>{
+    const row = document.createElement("div");
+    row.className = "company-item";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = selectedForCompare.includes(index);
+    checkbox.onchange = ()=>{
+      toggleCompare(index, checkbox.checked);
+    }
+
+    const label = document.createElement("span");
+    label.innerHTML = `${c.business_info.icon || "🏢"} ${c.business_info.name}`;
+    label.onclick = ()=>{
+      toggleCompare(index,true);
+      renderSingle(index);
+      checkbox.checked = true;
+    }
+
+    row.appendChild(checkbox);
+    row.appendChild(label);
+    list.appendChild(row);
+  });
+}
+
+// ---------- Compare / Single ----------
+function toggleCompare(index,checked){
+  if(checked){
+    if(!selectedForCompare.includes(index)) selectedForCompare.push(index);
+  } else {
+    selectedForCompare = selectedForCompare.filter(i=>i!==index);
+  }
+
+  if(selectedForCompare.length === 1){
+    renderSingle(selectedForCompare[0]);
+  } else if(selectedForCompare.length > 1){
+    renderCompareTable();
+  } else {
+    content.innerHTML="<h2>Select a company</h2>";
+  }
+}
+
+// ---------- Single Company ----------
+function renderSingle(index){
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+  selectedForCompare = [index];
+
+  const c = sortedCompanies[index];
+  content.innerHTML = renderProfile(c) + renderCanvasSingle(c);
+}
+
+function renderProfile(c){
+  const i = c.business_info;
+  return `
+    <div class="profile">
+      <div class="logo" style="background:${i.theme_color}">
+        ${i.icon || i.name[0]}
+      </div>
+      <div>
+        <h3>${i.name}</h3>
+        ${i.country ? `<div style="color:#64748b">${i.country} • ${i.industry || ''}</div>` : ''}
+        ${i.website ? `<div><a href="${i.website}" target="_blank">${i.website}</a></div>` : ''}
+        ${i.business_type ? `<div>${i.business_type}</div>` : ''}
+        ${i.stage ? `<div>${i.stage}</div>` : ''}
+        ${i.target_market ? `<div>${i.target_market}</div>` : ''}
+        ${i.description ? `<div>${i.description}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderCanvasSingle(c){
+  let notesRow = '';
+  if(c.notes && Object.keys(c.notes).length){
+    notesRow = `<tr><th>Notes</th><td>${Object.values(c.notes).join('<br>')}</td></tr>`;
+  }
+  return `
+    <table class="compare-table single-company-table">
+      <tbody>
+        ${Object.entries(c.business_model_canvas).map(([key,value])=>`
+          <tr>
+            <th>${bmcIcons[key]||"📌"} ${key.replaceAll("_"," ")}</th>
+            <td>${(value||[]).join("<br>")}</td>
+          </tr>
+        `).join("")}
+        ${notesRow}
+      </tbody>
+    </table>
+  `;
+}
+
+// ---------- Compare Table ----------
+function renderCompareTable(){
+  if(selectedForCompare.length === 0) return;
+  const allKeys = Object.keys(sortedCompanies[selectedForCompare[0]].business_model_canvas || {});
+  document.documentElement.style.setProperty('--num-columns', selectedForCompare.length + 1);
+
+  const headers = selectedForCompare.map(i=>{
+    const c = sortedCompanies[i];
+    const info = c.business_info;
+    return `
+      <th style="background:${info.theme_color}; color:white; padding:12px; cursor:pointer;" onclick="removeFromCompare(${i})">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div class="logo" style="background:${info.theme_color}; margin-bottom:4px;">
+            ${info.icon || info.name[0]}
+          </div>
+          <div>${info.name}</div>
+        </div>
+      </th>
+    `;
+  }).join("");
+
+  const infoFields = ["country","industry","website","business_type","stage","target_market"];
+  const infoRows = infoFields.map(field=>{
+    const cells = selectedForCompare.map(i=>{
+      const value = sortedCompanies[i].business_info[field] || '';
+      if(field==='website' && value) return `<td><a href="${value}" target="_blank">${value}</a></td>`;
+      return `<td>${value}</td>`;
+    }).join('');
+    const label = field.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+    return `<tr><th>${label}</th>${cells}</tr>`;
+  }).join('');
+
+  const bmcRows = allKeys.map(key=>{
+    const cells = selectedForCompare.map(i=>{
+      const items = (sortedCompanies[i].business_model_canvas[key] || []);
+      return `<td>${items.join("<br>")}</td>`;
+    }).join('');
+    return `<tr><th>${bmcIcons[key]||"📌"} ${key.replaceAll("_"," ")}</th>${cells}</tr>`;
+  }).join('');
+
+  const notesRow = selectedForCompare.some(i=>sortedCompanies[i].notes) ? `<tr><th>Notes</th>${selectedForCompare.map(i=>{
+    return `<td>${sortedCompanies[i].notes ? Object.values(sortedCompanies[i].notes).join('<br>') : ''}</td>`;
+  }).join('')}</tr>` : '';
+
+  content.innerHTML = `
+    <div class="compare-wrapper">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>BMC Section</th>
+            ${headers}
+          </tr>
+        </thead>
+        <tbody>
+          ${infoRows}
+          ${bmcRows}
+          ${notesRow}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ---------- Remove from compare by clicking header ----------
+function removeFromCompare(index){
+  selectedForCompare = selectedForCompare.filter(i=>i!==index);
+  renderCompanyList(); // بروز رسانی تیک‌ها
+  if(selectedForCompare.length === 1){
+    renderSingle(selectedForCompare[0]);
+  } else if(selectedForCompare.length > 1){
+    renderCompareTable();
+  } else {
+    content.innerHTML="<h2>Select a company</h2>";
+  }
+}
+</script>
+
+
+
+</body>
+</html>
