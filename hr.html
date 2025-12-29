@@ -14,8 +14,10 @@ header h2 { margin:0; font-size:14px; font-weight:600; }
 
 .container { display:flex; flex-direction:column; height:calc(100vh - 36px); padding:10px; box-sizing:border-box; gap:10px; }
 
-.summary { font-size:13px; background:white; padding:6px 12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); width:fit-content; margin-bottom:6px; }
+.summary { font-size:13px; background:white; padding:6px 12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); width:fit-content; margin-bottom:6px; display:flex; align-items:center; gap:10px; }
 .summary strong { font-size:16px; font-weight:600; }
+
+button.reset-btn { padding:4px 12px; font-size:12px; border-radius:8px; border:1px solid #ccc; cursor:pointer; background:#f8f8f8; }
 
 .chart-wrap { background:white; border-radius:10px; padding:10px; box-shadow:0 10px 20px rgba(0,0,0,0.05); flex:2; }
 
@@ -47,6 +49,7 @@ input.count-input { width:40px; font-size:11px; text-align:center; padding:2px; 
 .eye-toggle { cursor:pointer; margin-right:6px; font-size:14px; color:#555; }
 .eye-toggle.inactive { opacity:0.3; }
 
+.summary-row td { font-weight:600; background:#f9fafb; }
 </style>
 </head>
 
@@ -56,7 +59,10 @@ input.count-input { width:40px; font-size:11px; text-align:center; padding:2px; 
 </header>
 
 <div class="container">
-  <div class="summary">Total 24-Month HR Budget: <strong id="totalBudget">$0</strong></div>
+  <div class="summary">
+    Total 24-Month HR Budget: <strong id="totalBudget">$0</strong>
+    <button class="reset-btn">Reset All</button>
+  </div>
 
   <div class="chart-wrap">
     <canvas id="chart"></canvas>
@@ -83,14 +89,17 @@ const roleDatasets = hrData.roles.map(role => ({
 // ---------- CALC ----------
 function calculate() {
   let totalBudget = 0;
-  let monthlyTotals = Array(MONTHS).fill(0);
+  let monthlyBudgets = Array(MONTHS).fill(0);
+  let monthlyCounts = Array(MONTHS).fill(0);
 
   roleDatasets.forEach(ds=>{
     if(!ds.active) return;
     ds.data.forEach((c,m)=>{
       const safeCount = Math.max(0,c);
-      totalBudget += safeCount * ds.avgSalary * scenarioMultiplier;
-      monthlyTotals[m] += safeCount;
+      const budget = safeCount * ds.avgSalary * scenarioMultiplier;
+      totalBudget += budget;
+      monthlyBudgets[m] += budget;
+      monthlyCounts[m] += safeCount;
     });
   });
 
@@ -100,11 +109,25 @@ function calculate() {
     ds.hidden = !roleDatasets[i].active;
   });
 
-  chart.options.scales.x.ticks.callback = function(val,index){
-    return labels[index] + ' (' + monthlyTotals[index] + ')';
-  };
-
   chart.update();
+
+  // ردیف‌های مجموع بالای tbody
+  const tbody = document.querySelector("#table-container tbody");
+  if(!tbody) return;
+
+  // حذف ردیف‌های قبلی مجموع اگر موجود بودند
+  tbody.querySelectorAll(".summary-row").forEach(r=>r.remove());
+
+  const countRow = document.createElement("tr");
+  countRow.className = "summary-row";
+  countRow.innerHTML = `<td>Total Personnel</td><td>-</td>` + monthlyCounts.map(c=>`<td>${c}</td>`).join("");
+  
+  const budgetRow = document.createElement("tr");
+  budgetRow.className = "summary-row";
+  budgetRow.innerHTML = `<td>Total Budget</td><td>-</td>` + monthlyBudgets.map(b=>`<td>$${Math.round(b).toLocaleString()}</td>`).join("");
+
+  tbody.prepend(budgetRow);
+  tbody.prepend(countRow);
 }
 
 // ---------- TABLE ----------
@@ -180,21 +203,36 @@ const chart=new Chart(document.getElementById("chart"),{
       legend:{ onClick:null },
       tooltip:{
         callbacks:{
-          label:(ctx)=>`${ctx.dataset.label}: ${ctx.raw} people`
+          label:(ctx)=>{
+            const monthlyBudget = roleDatasets.reduce((sum, ds)=>{
+              if(!ds.active) return sum;
+              return sum + ds.data[ctx.dataIndex]*ds.avgSalary;
+            },0);
+            return `${ctx.dataset.label}: ${ctx.raw} people | Budget: $${Math.round(monthlyBudget).toLocaleString()}`;
+          }
         }
       }
     },
     scales:{
-      x:{ stacked:true, ticks:{ callback: (val,index)=>labels[index] } },
+      x:{ stacked:true },
       y:{ stacked:true, title:{ display:true, text:"Headcount" } }
     }
   }
+});
+
+// ---------- RESET BUTTON ----------
+document.querySelector(".reset-btn").addEventListener("click",()=>{
+  roleDatasets.forEach(r=>{
+    r.avgSalary = 0;
+    r.data = r.data.map(()=>0);
+  });
+  renderTable();
+  calculate();
 });
 
 // ---------- INIT ----------
 renderTable();
 calculate();
 </script>
-
 </body>
 </html>
