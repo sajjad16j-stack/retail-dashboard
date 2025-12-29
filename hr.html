@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Resource & Budget Manager</title>
+<script src="hr-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:Inter,sans-serif; background:#f4f6fb; }
+header { background:#0f172a; color:white; padding:6px 16px; font-size:14px; display:flex; align-items:center; }
+header h2 { margin:0; font-size:14px; font-weight:600; }
+
+.container { display:flex; flex-direction:column; height:calc(100vh - 36px); padding:10px; box-sizing:border-box; gap:10px; }
+
+.top-bar { display:flex; justify-content:space-between; align-items:stretch; gap:10px; }
+.budget-box { font-size:14px; background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); font-weight:600; display:flex; align-items:center; justify-content:center; padding:8px 16px; }
+.control-box { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2); display:flex; align-items:center; gap:10px; min-width:200px; padding:8px 16px; }
+button.reset-btn { font-size:12px; border-radius:8px; border:1px solid #ccc; cursor:pointer; background:#f8f8f8; padding:4px 12px; height:100%; }
+
+.chart-wrap { background:white; border-radius:10px; padding:10px; box-shadow:0 10px 20px rgba(0,0,0,0.05); flex:2; }
+#table-container { overflow-y:auto; background:white; border-radius:10px; padding:0; box-shadow:0 10px 20px rgba(0,0,0,0.05); flex:1; }
+
+table { width:100%; border-collapse:collapse; table-layout:fixed; }
+col.item-col { width:180px; }
+col.total-col { width:100px; }
+col.cost-col { width:100px; }
+col:nth-child(n+4) { width: calc((100% - 380px)/24); }
+
+table th, table td { border:1px solid #e5e7eb; padding:3px 4px; font-size:11px; text-align:center; background:white; }
+table th:first-child, table td:first-child { text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px; }
+table th { background:#f1f5f9; position: sticky; top:0; z-index:2; }
+tbody tr:hover { background:#e0f0ff; }
+tbody tr:hover td:first-child { background:#cde4ff; }
+
+input.cost-input { width:100%; max-width:120px; font-size:12px; font-weight:500; text-align:center; }
+input.count-input { width:40px; font-size:11px; text-align:center; padding:2px; }
+
+.eye-toggle { cursor:pointer; margin-right:6px; font-size:14px; color:#555; }
+.eye-toggle.inactive { opacity:0.3; }
+
+.summary-row td { font-weight:600; background:#f9fafb; }
+</style>
+</head>
+<body>
+<header>
+  <h2>Resource & Budget Manager</h2>
+</header>
+
+<div class="container">
+
+  <div class="top-bar">
+    <div class="budget-box">
+      Total 24-Month Budget: <strong id="totalBudget">$0</strong>
+    </div>
+
+    <div class="control-box">
+      <button class="reset-btn">Reset All</button>
+      <label style="font-size:12px; cursor:pointer; display:flex; align-items:center; gap:4px; height:100%;">
+        <input type="checkbox" id="applyToRest"> Apply to remaining months
+      </label>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="chart"></canvas>
+  </div>
+
+  <div id="table-container"></div>
+</div>
+
+<script>
+const MONTHS = 24;
+let labels = Array.from({ length: MONTHS }, (_, i) => `M${i+1}`);
+
+// ---------- Initialize datasets ----------
+const itemDatasets = resourceData.items.map(item => ({
+  type:"bar",
+  label:item.title,
+  data:[...item.countByMonth],
+  backgroundColor:item.color,
+  unitCost:item.unitCost,
+  active:true
+}));
+
+// ---------- Calculate totals ----------
+function calculate() {
+  let totalBudget = 0;
+  let monthlyBudgets = Array(MONTHS).fill(0);
+  let monthlyCounts = Array(MONTHS).fill(0);
+
+  itemDatasets.forEach((ds, idx)=>{
+    if(!ds.active) return;
+    let itemTotal = 0;
+    ds.data.forEach((c,m)=>{
+      const safeCount = Math.max(0,c);
+      const budget = safeCount * ds.unitCost;
+      itemTotal += budget;
+      totalBudget += budget;
+      monthlyBudgets[m] += budget;
+      monthlyCounts[m] += safeCount;
+    });
+
+    const tr = document.querySelector(`#table-container tbody tr[data-index='${idx}']`);
+    if(tr) tr.children[1].textContent = "$" + Math.round(itemTotal).toLocaleString();
+  });
+
+  document.getElementById("totalBudget").textContent="$"+Math.round(totalBudget).toLocaleString();
+
+  const tbody = document.querySelector("#table-container tbody");
+  if(!tbody) return;
+  tbody.querySelectorAll(".summary-row").forEach(r=>r.remove());
+
+  const countRow = document.createElement("tr");
+  countRow.className="summary-row";
+  countRow.innerHTML=`<td>Total Quantity</td><td>-</td><td>-</td>` + monthlyCounts.map(c=>`<td>${c}</td>`).join("");
+
+  const budgetRow = document.createElement("tr");
+  budgetRow.className="summary-row";
+  budgetRow.innerHTML=`<td>Total Budget</td><td>-</td><td>-</td>` + monthlyBudgets.map(b=>`<td>$${Math.round(b).toLocaleString()}</td>`).join("");
+
+  tbody.prepend(budgetRow);
+  tbody.prepend(countRow);
+}
+
+// ---------- Render table ----------
+function renderTable(){
+  const container=document.getElementById("table-container");
+  container.innerHTML="";
+
+  const table=document.createElement("table");
+  table.innerHTML=`
+    <colgroup>
+      <col class="item-col">
+      <col class="total-col">
+      <col class="cost-col">
+      ${labels.map(()=>"<col>").join("")}
+    </colgroup>
+  `;
+
+  const thead=document.createElement("thead");
+  thead.innerHTML=`
+    <tr>
+      <th>Item</th>
+      <th>Total Budget ($)</th>
+      <th>Unit Cost ($)</th>
+      ${labels.map(l=>`<th>${l}</th>`).join("")}
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  const tbody=document.createElement("tbody");
+  itemDatasets.forEach((r,ri)=>{
+    const totalBudget = r.data.reduce((sum,v)=>sum + Math.max(0,v)*r.unitCost,0);
+    const tr=document.createElement("tr");
+    tr.setAttribute("data-index", ri);
+    tr.innerHTML=`
+      <td>
+        <span class="eye-toggle ${r.active?'':'inactive'}" data-role="${ri}">&#128065;</span>
+        ${r.label}
+      </td>
+      <td>$${Math.round(totalBudget).toLocaleString()}</td>
+      <td><input type="number" min="0" step="100" value="${r.unitCost}" data-role="${ri}" class="cost-input"></td>
+      ${r.data.map((v,mi)=>`<td><input type="number" min="0" value="${v}" data-role="${ri}" data-month="${mi}" class="count-input"></td>`).join("")}
+    `;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  container.appendChild(table);
+
+  // Eye toggle
+  container.querySelectorAll(".eye-toggle").forEach(eye=>{
+    eye.addEventListener("click",()=>{
+      const r=+eye.dataset.role;
+      itemDatasets[r].active=!itemDatasets[r].active;
+      eye.classList.toggle("inactive",!itemDatasets[r].active);
+
+      // Update chart with only active items
+      chart.data.datasets = itemDatasets.filter(ds => ds.active);
+      calculate();
+      chart.update();
+    });
+  });
+
+  // Unit cost input
+  container.querySelectorAll("input.cost-input").forEach(input=>{
+    input.addEventListener("input",()=>{
+      const r=input.dataset.role;
+      itemDatasets[r].unitCost=Math.max(0,+input.value);
+      calculate();
+      chart.update();
+    });
+  });
+
+  // Count inputs
+  const applyCheckbox = document.getElementById("applyToRest");
+  container.querySelectorAll("input.count-input").forEach(input=>{
+    input.addEventListener("input",(e)=>{
+      const r = +input.dataset.role;
+      const m = +input.dataset.month;
+      const value = Math.max(0,+input.value);
+
+      if(applyCheckbox.checked){
+        for(let i=m;i<MONTHS;i++){
+          itemDatasets[r].data[i]=value;
+          const otherInput=container.querySelector(`input.count-input[data-role="${r}"][data-month="${i}"]`);
+          if(otherInput) otherInput.value=value;
+        }
+      } else {
+        itemDatasets[r].data[m]=value;
+      }
+
+      calculate();
+      chart.update();
+    });
+  });
+}
+
+// ---------- Chart ----------
+const chart=new Chart(document.getElementById("chart"),{
+  type:"bar",
+  data:{ labels, datasets:[...itemDatasets] },
+  options:{
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{ onClick:null },
+      tooltip:{
+        callbacks:{
+          label:(ctx)=>{
+            const monthlyBudget = itemDatasets.reduce((sum, ds)=>{
+              if(!ds.active) return sum;
+              return sum + ds.data[ctx.dataIndex]*ds.unitCost;
+            },0);
+            return `${ctx.dataset.label}: ${ctx.raw} quantity | Budget: $${Math.round(monthlyBudget).toLocaleString()}`;
+          }
+        }
+      }
+    },
+    scales:{
+      x:{ stacked:true },
+      y:{ stacked:true, title:{ display:true, text:"Quantity" } }
+    }
+  }
+});
+
+// ---------- Reset ----------
+document.querySelector(".reset-btn").addEventListener("click",()=>{
+  itemDatasets.forEach(r=>{
+    r.unitCost=0;
+    r.data=r.data.map(()=>0);
+  });
+  renderTable();
+  calculate();
+  chart.update();
+});
+
+// ---------- INIT ----------
+renderTable();
+calculate();
+chart.update();
+</script>
+</body>
+</html>
