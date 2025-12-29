@@ -1,0 +1,1 @@
+window.TAB_DATA = {};
