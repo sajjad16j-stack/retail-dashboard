@@ -62,6 +62,9 @@ input.count-input { width:40px; font-size:11px; text-align:center; padding:2px; 
   <div class="summary">
     Total 24-Month HR Budget: <strong id="totalBudget">$0</strong>
     <button class="reset-btn">Reset All</button>
+    <label style="margin-left:10px; font-size:12px; cursor:pointer;">
+      <input type="checkbox" id="applyToRest"> Apply to remaining months
+    </label>
   </div>
 
   <div class="chart-wrap">
@@ -115,7 +118,6 @@ function calculate() {
   const tbody = document.querySelector("#table-container tbody");
   if(!tbody) return;
 
-  // حذف ردیف‌های قبلی مجموع اگر موجود بودند
   tbody.querySelectorAll(".summary-row").forEach(r=>r.remove());
 
   const countRow = document.createElement("tr");
@@ -171,6 +173,7 @@ function renderTable(){
   table.appendChild(tbody);
   container.appendChild(table);
 
+  // Eye toggle
   container.querySelectorAll(".eye-toggle").forEach(eye=>{
     eye.addEventListener("click",()=>{
       const r=eye.dataset.role;
@@ -180,14 +183,33 @@ function renderTable(){
     });
   });
 
-  container.querySelectorAll("input").forEach(input=>{
+  // Salary inputs
+  container.querySelectorAll("input.salary-input").forEach(input=>{
     input.addEventListener("input",()=>{
       const r=input.dataset.role;
-      if(input.classList.contains("salary-input")){
-        roleDatasets[r].avgSalary=Math.max(0,+input.value);
-      }else{
-        roleDatasets[r].data[input.dataset.month]=Math.max(0,+input.value);
+      roleDatasets[r].avgSalary=Math.max(0,+input.value);
+      calculate();
+    });
+  });
+
+  // Count inputs with Apply to Rest
+  const applyCheckbox = document.getElementById("applyToRest");
+  container.querySelectorAll("input.count-input").forEach(input=>{
+    input.addEventListener("input",(e)=>{
+      const r = +input.dataset.role;
+      const m = +input.dataset.month;
+      const value = Math.max(0, +input.value);
+
+      if(applyCheckbox.checked){
+        for(let i=m; i<MONTHS; i++){
+          roleDatasets[r].data[i] = value;
+          const otherInput = container.querySelector(`input.count-input[data-role="${r}"][data-month="${i}"]`);
+          if(otherInput) otherInput.value = value;
+        }
+      } else {
+        roleDatasets[r].data[m] = value;
       }
+
       calculate();
     });
   });
