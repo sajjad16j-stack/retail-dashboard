@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HR Headcount & Budget Manager</title>
+
+<script src="hr-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:Inter,sans-serif; background:#f4f6fb; }
+header { background:#0f172a; color:white; padding:6px 16px; font-size:14px; display:flex; align-items:center; justify-content:space-between; }
+header h2 { margin:0; font-size:14px; font-weight:600; }
+
+.container { display:flex; flex-direction:column; height:calc(100vh - 36px); padding:10px; box-sizing:border-box; gap:10px; }
+
+.summary { font-size:13px; background:white; padding:6px 12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); width:fit-content; margin-bottom:6px; }
+.summary strong { font-size:16px; font-weight:600; }
+
+.chart-wrap { background:white; border-radius:10px; padding:10px; box-shadow:0 10px 20px rgba(0,0,0,0.05); flex:2; }
+
+#table-container { overflow-y:auto; background:white; border-radius:10px; padding:0; box-shadow:0 10px 20px rgba(0,0,0,0.05); flex:1; }
+
+table { width:100%; border-collapse:collapse; table-layout:fixed; }
+col.role-col { width:180px; }
+col.salary-col { width:100px; }
+col:nth-child(n+3) { width: calc((100% - 280px)/24); }
+
+table th, table td { border:1px solid #e5e7eb; padding:3px 4px; font-size:11px; text-align:center; background:white; }
+table th:first-child, table td:first-child {
+  text-align:left;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:180px;
+}
+
+table th { background:#f1f5f9; position: sticky; top:0; z-index:2; }
+
+/* Highlight row and first column on hover */
+tbody tr:hover { background:#e0f0ff; }
+tbody tr:hover td:first-child { background:#cde4ff; }
+
+input.salary-input { width:100%; max-width:120px; font-size:12px; font-weight:500; text-align:center; }
+input.count-input { width:40px; font-size:11px; text-align:center; padding:2px; }
+
+.eye-toggle { cursor:pointer; margin-right:6px; font-size:14px; color:#555; }
+.eye-toggle.inactive { opacity:0.3; }
+
+</style>
+</head>
+
+<body>
+<header>
+  <h2>HR Headcount Manager</h2>
+</header>
+
+<div class="container">
+  <div class="summary">Total 24-Month HR Budget: <strong id="totalBudget">$0</strong></div>
+
+  <div class="chart-wrap">
+    <canvas id="chart"></canvas>
+  </div>
+
+  <div id="table-container"></div>
+</div>
+
+<script>
+const MONTHS = 24;
+let labels = Array.from({ length: MONTHS }, (_, i) => `M${i+1}`);
+let scenarioMultiplier = 1;
+
+// ---------- DATASETS ----------
+const roleDatasets = hrData.roles.map(role => ({
+  type:"bar",
+  label:role.title,
+  data:[...role.countByMonth],
+  backgroundColor:role.color,
+  avgSalary:role.avgSalary,
+  active:true
+}));
+
+// ---------- CALC ----------
+function calculate() {
+  let totalBudget = 0;
+  let monthlyTotals = Array(MONTHS).fill(0);
+
+  roleDatasets.forEach(ds=>{
+    if(!ds.active) return;
+    ds.data.forEach((c,m)=>{
+      const safeCount = Math.max(0,c);
+      totalBudget += safeCount * ds.avgSalary * scenarioMultiplier;
+      monthlyTotals[m] += safeCount;
+    });
+  });
+
+  document.getElementById("totalBudget").textContent="$"+Math.round(totalBudget).toLocaleString();
+
+  chart.data.datasets.forEach((ds,i)=>{
+    ds.hidden = !roleDatasets[i].active;
+  });
+
+  chart.options.scales.x.ticks.callback = function(val,index){
+    return labels[index] + ' (' + monthlyTotals[index] + ')';
+  };
+
+  chart.update();
+}
+
+// ---------- TABLE ----------
+function renderTable(){
+  const container=document.getElementById("table-container");
+  container.innerHTML="";
+
+  const table=document.createElement("table");
+  table.innerHTML=`
+    <colgroup>
+      <col class="role-col">
+      <col class="salary-col">
+      ${labels.map(()=>"<col>").join("")}
+    </colgroup>
+  `;
+
+  const thead=document.createElement("thead");
+  thead.innerHTML=`
+    <tr>
+      <th>Role</th>
+      <th>Avg Salary ($)</th>
+      ${labels.map(l=>`<th>${l}</th>`).join("")}
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  const tbody=document.createElement("tbody");
+  roleDatasets.forEach((r,ri)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>
+        <span class="eye-toggle ${r.active?'':'inactive'}" data-role="${ri}">&#128065;</span>
+        ${r.label}
+      </td>
+      <td><input type="number" min="0" step="100" value="${r.avgSalary}" data-role="${ri}" class="salary-input"></td>
+      ${r.data.map((v,mi)=>`<td><input type="number" min="0" value="${v}" data-role="${ri}" data-month="${mi}" class="count-input"></td>`).join("")}
+    `;
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+
+  container.querySelectorAll(".eye-toggle").forEach(eye=>{
+    eye.addEventListener("click",()=>{
+      const r=eye.dataset.role;
+      roleDatasets[r].active=!roleDatasets[r].active;
+      eye.classList.toggle("inactive",!roleDatasets[r].active);
+      calculate();
+    });
+  });
+
+  container.querySelectorAll("input").forEach(input=>{
+    input.addEventListener("input",()=>{
+      const r=input.dataset.role;
+      if(input.classList.contains("salary-input")){
+        roleDatasets[r].avgSalary=Math.max(0,+input.value);
+      }else{
+        roleDatasets[r].data[input.dataset.month]=Math.max(0,+input.value);
+      }
+      calculate();
+    });
+  });
+}
+
+// ---------- CHART ----------
+const chart=new Chart(document.getElementById("chart"),{
+  type:"bar",
+  data:{ labels, datasets:[...roleDatasets] },
+  options:{
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{ onClick:null },
+      tooltip:{
+        callbacks:{
+          label:(ctx)=>`${ctx.dataset.label}: ${ctx.raw} people`
+        }
+      }
+    },
+    scales:{
+      x:{ stacked:true, ticks:{ callback: (val,index)=>labels[index] } },
+      y:{ stacked:true, title:{ display:true, text:"Headcount" } }
+    }
+  }
+});
+
+// ---------- INIT ----------
+renderTable();
+calculate();
+</script>
+
+</body>
+</html>
