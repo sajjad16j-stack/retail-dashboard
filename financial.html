@@ -34,7 +34,7 @@ tbody tr:hover { background:#e0f0ff; }
 tbody tr:hover td:first-child { background:#cde4ff; }
 
 input.cost-input, input.count-input { box-sizing: border-box; }
-input.cost-input { width:100%; max-width:80px; font-size:12px; font-weight:500; text-align:center; }
+input.cost-input { width:100%; max-width:60px; font-size:12px; font-weight:500; text-align:center; } /* باریک‌تر شد */
 input.count-input { width:50px; font-size:12px; text-align:center; padding:2px; }
 
 .eye-toggle { cursor:pointer; margin-right:6px; font-size:14px; color:#555; }
@@ -43,7 +43,6 @@ input.count-input { width:50px; font-size:12px; text-align:center; padding:2px; 
 .summary-row td {
     font-size:12px;
 }
-
 </style>
 </head>
 <body>
@@ -115,8 +114,15 @@ function loadTab(tab){
   const topBar = document.getElementById("top-bar");
   const chartWrap = document.getElementById("chart-wrap");
 
-  if(tab==="summary"){ topBar.style.display="none"; chartWrap.style.display="none"; renderSummary(); return;}
-  else { topBar.style.display="flex"; chartWrap.style.display="block"; }
+  if(tab==="summary"){
+    topBar.style.display="none"; 
+    chartWrap.style.display="none"; 
+    renderSummary(); 
+    return;
+  } else {
+    topBar.style.display="flex"; 
+    chartWrap.style.display="block";
+  }
 
   itemDatasets = TAB_STATE[tab];
   chart.data.datasets = [...itemDatasets.filter(ds=>ds.active)];
@@ -136,10 +142,10 @@ function renderSummary(){
   for(const tab of ["hr","capital","operational","consumable","marketing"]){
     const tabTotal = TAB_STATE[tab].reduce((sum,item)=> item.active? sum+item.data.reduce((s,v)=>s+v*item.unitCost,0):sum ,0);
     totalCosts += tabTotal;
-    html+=`<tr><td>${tab}</td><td  style='color:red'>$${Math.round(tabTotal).toLocaleString()}</td></tr>`;
+    html+=`<tr><td>${tab}</td><td style='color:red'>$${Math.round(tabTotal).toLocaleString()}</td></tr>`;
   }
   incomeTotal = TAB_STATE["income"].reduce((sum,item)=> item.active? sum+item.data.reduce((s,v)=>s+Math.max(0,v)*item.unitCost,0):sum ,0);
-  html+=`<tr><td>income</td><td style='color:green'>$${Math.round(incomeTotal).toLocaleString()}</td></tr>`;
+  html+=`<tr><td>Income</td><td style='color:green'>$${Math.round(incomeTotal).toLocaleString()}</td></tr>`;
   const net = incomeTotal - totalCosts;
   html+=`<tr style='font-weight:bold'><td>Net Total</td><td>$${Math.round(net).toLocaleString()}</td></tr>`;
   html+="</table>";
@@ -160,23 +166,33 @@ function renderTable(){
   const container=document.getElementById("table-container");
   container.innerHTML="";
   const table=document.createElement("table");
-  table.innerHTML=`<colgroup><col style="width:150px"><col style="width:90px"><col style="width:90px">${labels.map(()=>"<col>").join("")}</colgroup>`;
+  table.innerHTML=`<colgroup>
+    <col style="width:150px">  <!-- Label -->
+    <col style="width:90px">   <!-- Total -->
+    <col style="width:50px">   <!-- % -->
+    <col style="width:60px">   <!-- Unit Cost باریک‌تر -->
+    ${labels.map(()=>"<col>").join("")}
+  </colgroup>`;
   const thead=document.createElement("thead");
-  thead.innerHTML=`<tr><th></th><th>Total ($)</th><th>Unit Cost ($)</th>${labels.map(l=>`<th>${l}</th>`).join("")}</tr>`;
+  thead.innerHTML=`<tr><th></th><th>Total ($)</th><th>%</th><th>Unit ($)</th>${labels.map(l=>`<th>${l}</th>`).join("")}</tr>`;
   table.appendChild(thead);
   const tbody=document.createElement("tbody");
 
   // ---------- Summary rows ----------
   const qtyRow=document.createElement("tr"); qtyRow.className="summary-row";
-  qtyRow.innerHTML=`<td>Monthly Quantity</td><td>-</td><td>-</td>${Array(MONTHS).fill(0).map(v=>`<td>${v}</td>`).join("")}`; tbody.appendChild(qtyRow);
+  qtyRow.innerHTML=`<td>Monthly Quantity</td><td>-</td><td>-</td><td>-</td>${Array(MONTHS).fill(0).map(v=>`<td>${v}</td>`).join("")}`; tbody.appendChild(qtyRow);
   const budgetRow=document.createElement("tr"); budgetRow.className="summary-row";
-  budgetRow.innerHTML=`<td>Monthly Amount</td><td>-</td><td>-</td>${Array(MONTHS).fill(0).map(v=>`<td>$${v}</td>`).join("")}`; tbody.appendChild(budgetRow);
+  budgetRow.innerHTML=`<td>Monthly Amount</td><td>-</td><td>-</td><td>-</td>${Array(MONTHS).fill(0).map(v=>`<td>$${v}</td>`).join("")}`; tbody.appendChild(budgetRow);
+
+  const tabTotal = itemDatasets.reduce((s,r)=> r.active? s + r.data.reduce((a,v)=>a+v*r.unitCost,0) : s,0);
 
   itemDatasets.forEach((r,ri)=>{
     const totalBudget = r.data.reduce((sum,v)=>r.active?sum+v*r.unitCost:sum,0);
+    const percent = tabTotal ? (totalBudget / tabTotal * 100) : 0;
     const tr=document.createElement("tr"); tr.setAttribute("data-index",ri);
     tr.innerHTML=`<td title="${r.label}"><span class="eye-toggle ${r.active?'':'inactive'}" data-role="${ri}">&#128065;</span>${r.label}</td>
     <td>$${Math.round(totalBudget).toLocaleString()}</td>
+    <td>${percent.toFixed(1)}%</td>
     <td><input type="number" min="0" step="100" value="${r.unitCost}" data-role="${ri}" class="cost-input"></td>
     ${r.data.map((v,mi)=>`<td><input type="number" min="0" value="${v}" data-role="${ri}" data-month="${mi}" class="count-input"></td>`).join("")}`;
     tbody.appendChild(tr);
@@ -198,8 +214,8 @@ function updateSummaryRows(){
       if(!r.active) return;
       monthQty+=r.data[m]; monthBudget+=r.data[m]*r.unitCost;
     });
-    qtyCells[m+3].textContent=monthQty;
-    budgetCells[m+3].textContent="$"+Math.round(monthBudget).toLocaleString();
+    qtyCells[m+4].textContent=monthQty;
+    budgetCells[m+4].textContent="$"+Math.round(monthBudget).toLocaleString();
   }
 }
 
@@ -241,11 +257,16 @@ function attachEvents(){
 /* ---------- CALCULATE ---------- */
 function calculate(){
   let totalBudget=0;
+  const tabTotal = itemDatasets.reduce((s,r)=> r.active? s + r.data.reduce((a,v)=>a+v*r.unitCost,0) : s,0);
   itemDatasets.forEach((ds,idx)=>{
     if(!ds.active) return;
     const itemTotal=ds.data.reduce((s,v)=>s+v*ds.unitCost,0);
     const tr=document.querySelector(`#table-container tbody tr[data-index='${idx}']`);
-    if(tr) tr.children[1].textContent="$"+Math.round(itemTotal).toLocaleString();
+    if(tr) {
+      tr.children[1].textContent="$"+Math.round(itemTotal).toLocaleString();
+      const percent = tabTotal ? (itemTotal / tabTotal * 100) : 0;
+      tr.children[2].textContent = percent.toFixed(1) + "%";
+    }
     totalBudget+=itemTotal;
   });
   document.getElementById("totalBudget").textContent="$"+Math.round(totalBudget).toLocaleString();
