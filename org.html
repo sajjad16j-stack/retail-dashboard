@@ -3,115 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Structure Layers</title>
+<title>Team Structure Layers with Proper CTO</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
-    overflow: hidden; /* جلوگیری از اسکرول */
     font-family: 'Arial', sans-serif;
     background: #f0f2f5;
     display: flex;
     justify-content: center;
-    align-items: center; /* مرکز صفحه */
+    align-items: flex-start;
+    overflow-x: auto;
+    height: 100%;
   }
 
   .cake {
-    display: grid;
-    grid-template-rows: auto auto auto auto auto auto; /* 6 لایه اصلی */
-    gap: 15px;
-    width: 1400px; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* فاصله بین لایه‌ها */
+    padding: 100px 20px;
+    width: 1200px;
+    box-sizing: border-box;
   }
 
   .layer {
     display: grid;
-    gap: 15px;
+    gap: 10px; /* فاصله بین بلوک‌ها */
+    width: 100%;
+    align-items: center;
+    grid-auto-rows: 70px; /* ارتفاع ثابت بلوک‌ها */
   }
 
-  /* تعداد ستون‌ها برای لایه‌ها */
-  .layer-1 { grid-template-columns: repeat(4, 1fr); } /* PR, CX, EX, Brand Experience */
-  .layer-2 { grid-template-columns: repeat(6, 1fr); } /* Marketing, Sales, Customer Support, Financial, Legal, HR */
-  .layer-3 { grid-template-columns: 3fr 1fr 1fr; } /* Product Development, Product Design, Product Support با نسبت 3:1:1 */
-  .layer-4 { grid-template-columns: repeat(5, 1fr); } /* Automation Dev + Application Dev + Vision + Agentic + Financial Dev */
-  .layer-5 { grid-template-columns: repeat(3, 1fr); } /* DevOps, Data, Tech Support کنار هم */
-  .layer-6 { grid-template-columns: repeat(3, 1fr); } /* Security, Network, Equipment Supply کنار هم */
+  .manager {
+    padding: 25px 15px; /* padding داخلی همان حالت قبل */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #333;
+    border-radius: 12px;
+    background: #dfe4ea;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    min-width: 70px; /* هم عرض سایر مدیرها */
+    
+    text-align: center;
+  }
 
   .block {
-    padding: 25px 10px;
-    border-radius: 10px;
+    padding: 25px 10px; /* padding داخلی همان حالت قبل */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
     font-weight: bold;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 12px;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.25);
     transition: transform 0.3s;
     font-size: 1rem;
-    white-space: nowrap;
   }
 
-  .block:hover {
-    transform: translateY(-5px) scale(1.05);
+ 
+
+  .layer-0 .block { background: #ff6b6b; } 
+  .layer-1 .block { background: #ffa502; } 
+  .layer-2 .block { background: #1e90ff; } 
+  .layer-3 .block { background: #2ed573; } 
+  .layer-4 .block { background: #9c88ff; }
+  .layer-5 .block { background: #ff4757; } 
+  .layer-6 .block { background: #57606f; }
+
+  /* CTO عمودی با متن افقی */
+  .cto-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; /* هم عرض سایر مدیرها */
+    height: calc(3 * 70px + 2 * 10px); /* مجموع ارتفاع سه لایه + gap بین لایه‌ها */
+    background: #dfe4ea;
+    color: #333;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    text-align: center;
   }
 
-  /* رنگ‌ها برای هر لایه */
-  .layer-1 .block { background: #ff6b6b; } /* PR/CX/EX/Brand Experience */
-  .layer-2 .block { background: #1e90ff; } /* Marketing/Sales/Support/Financial/Legal/HR */
-  .layer-3 .block { background: #2ed573; } /* Product Development/Product Design/Product Support */
-  .layer-4 .block { background: #9c88ff; } /* Automation/Application/Vision/Agentic/Financial Dev */
-  .layer-5 .block { background: #ff4757; } /* DevOps/Data/Tech Support */
-  .layer-6 .block { background: #57606f; } /* Security/Network/Equipment Supply */
+  /* کانتینر بلوک‌های سه لایه آخر */
+  .last-three-layers {
+    display: grid;
+    gap: 10px; /* فاصله بین بلوک‌ها در سه لایه آخر */
+  }
 
 </style>
 </head>
 <body>
 <div class="cake">
 
-  <!-- لایه PR / CX / EX / Brand Experience -->
-  <div class="layer layer-1">
-    <div class="block">PR</div>
-    <div class="block">Customer Experience</div>
-    <div class="block">Employee Experience</div>
-    <div class="block">Brand Experience</div>
+  <!-- لایه 0 -->
+  <div class="layer layer-0" style="grid-template-columns: 1fr;">
+    <div class="block">Board of Directors</div>
   </div>
 
-  <!-- لایه Marketing / Sales / Customer Support / Financial / Legal / HR -->
-  <div class="layer layer-2">
+  <!-- لایه 1 -->
+  <div class="layer layer-1" style="grid-template-columns: auto 1fr 1fr 1fr 1fr;">
+    <div class="manager">CEO</div>
+    <div class="block">HR</div>
+    <div class="block">Financial</div>
+    <div class="block">Legal</div>
+    <div class="block">Consultants</div>
+  </div>
+
+  <!-- لایه 2 -->
+  <div class="layer layer-2" style="grid-template-columns: auto 2fr 3fr 3fr 2fr;">
+    <div class="manager">CMO</div>
     <div class="block">Marketing</div>
     <div class="block">Sales</div>
     <div class="block">Customer Support</div>
-    <div class="block">Financial</div>
-    <div class="block">Legal</div>
-    <div class="block">HR</div>
+    <div class="block">PR</div>
   </div>
 
-  <!-- لایه سوم: Product Development, Product Design, Product Support -->
-  <div class="layer layer-3">
+  <!-- لایه 3 -->
+  <div class="layer layer-3" style="grid-template-columns: auto 8fr 2fr;">
+    <div class="manager">CPO</div>
     <div class="block">Product Development</div>
-    <div class="block">Product Design</div>
     <div class="block">Product Support</div>
   </div>
 
-  <!-- لایه چهارم: Automation Dev و Application Dev + Vision + Agentic + Financial Dev -->
-  <div class="layer layer-4">
-    <div class="block">Automation Dev</div>
-    <div class="block">Application Dev</div>
-    <div class="block">Vision Dev</div>
-    <div class="block">Agentic Dev</div>
-    <div class="block">Financial Dev</div>
-  </div>
+  <!-- لایه 4 تا 6 با CTO عمودی -->
+  <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px;">
+    <!-- CTO عمودی -->
+    <div class="cto-block">CTO</div>
 
-  <!-- لایه پنجم: DevOps, Data, Tech Support کنار هم -->
-  <div class="layer layer-5">
-    <div class="block">DevOps</div>
-    <div class="block">Data</div>
-    <div class="block">Tech Support</div>
-  </div>
-
-  <!-- لایه آخر: Security, Network, Equipment Supply -->
-  <div class="layer layer-6">
-    <div class="block">Security</div>
-    <div class="block">Network</div>
-    <div class="block">Equipment Supply</div>
+    <!-- بلوک‌ها درون یک کانتینر Grid عمودی با gap یکسان -->
+    <div class="last-three-layers">
+      <!-- لایه 4 -->
+      <div class="layer layer-4" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap:10px;">
+        <div class="block">Machine Vision Dev</div>
+        <div class="block">Algorithm Dev</div>
+        <div class="block">Application Dev</div>
+        <div class="block">Financial Dev</div>
+      </div>
+      <!-- لایه 5 -->
+      <div class="layer layer-5" style="grid-template-columns: 4fr 4fr 2fr; gap:10px;">
+        <div class="block">DevOps</div>
+        <div class="block">Data</div>
+        <div class="block">Tech Support</div>
+      </div>
+      <!-- لایه 6 -->
+      <div class="layer layer-6" style="grid-template-columns: 2fr 5fr 3fr; gap:10px;">
+        <div class="block">Security</div>
+        <div class="block">Network</div>
+        <div class="block">Equipment Supply</div>
+      </div>
+    </div>
   </div>
 
 </div>
