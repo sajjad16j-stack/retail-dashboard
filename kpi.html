@@ -166,7 +166,7 @@ function createCard(team){
             <div class="progress-bar">
                 <div class="progress ${getColor(kpi.value)}" style="width:${kpi.value}%"></div>
             </div>
-            <div class="tooltip">${kpi.desc}</div>
+            
         `;
         container.appendChild(kpiDiv);
     });
@@ -185,3 +185,4 @@ otherTeams.forEach(team=>teamsRow.appendChild(createCard(team)));
 
 </body>
 </html>
+
