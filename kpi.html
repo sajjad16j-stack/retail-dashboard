@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPI Dashboard</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    flex: 1 1 250px;
+    min-width: 250px;
+    max-width: 250px;
+    height: 320px; /* ارتفاع ثابت */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.team-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.kpi-container {
+    flex: 1;
+    overflow-y: auto; /* اسکرول داخلی برای KPIهای زیاد */
+}
+.kpi {
+    margin: 5px 0;
+    position: relative;
+}
+.kpi-name {
+    font-size: 14px;
+    color: #555;
+}
+.kpi-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+.progress-bar {
+    height: 10px;
+    background: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+.progress {
+    height: 100%;
+    border-radius: 5px;
+}
+.green { background: #4CAF50; }
+.yellow { background: #FFC107; }
+.red { background: #F44336; }
+.tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 5px 8px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.kpi:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<h1>Organization KPI Dashboard</h1>
+
+<div class="row" id="topRow"></div>
+<div class="row" id="teamsRow"></div>
+
+<script>
+// داده کامل تیم‌ها
+const boardAndCLevel = [
+    { name: "Board of Directors", kpis: [{name: "Strategic Alignment", value: 80, desc: "Alignment with company goals"},{name: "Governance Quality", value: 85, desc: "Decision-making effectiveness"},{name: "Meeting Attendance", value: 90, desc: "Participation of board members"}] },
+    { name: "CEO", kpis: [{name: "Vision Execution", value: 90, desc: "Progress on company vision"},{name: "Leadership Effectiveness", value: 88, desc: "Ability to lead teams"},{name: "Stakeholder Satisfaction", value: 85, desc: "Feedback from stakeholders"}] },
+    { name: "CPO", kpis: [{name: "Product Delivery", value: 88, desc: "Timely delivery of products"},{name: "Innovation Index", value: 80, desc: "Rate of new ideas implemented"},{name: "Feature Adoption", value: 85, desc: "Users adopting new features"}] },
+    { name: "CMO", kpis: [{name: "Lead Generation", value: 78, desc: "Qualified leads generated"},{name: "Brand Awareness", value: 85, desc: "Public recognition of brand"},{name: "Campaign ROI", value: 72, desc: "Return on campaigns"},{name: "Customer Engagement", value: 80, desc: "Interaction with content"}] },
+    { name: "CTO", kpis: [{name: "Tech Stability", value: 90, desc: "System reliability"},{name: "System Uptime", value: 99, desc: "Operational uptime percentage"},{name: "Tech Roadmap Adherence", value: 85, desc: "Following planned roadmap"}] }
+];
+
+const otherTeams = [
+    { name: "HR", kpis: [{name: "Hiring Efficiency", value: 70, desc: "Time-to-hire and quality"},{name: "Employee Satisfaction", value: 85, desc: "Engagement and satisfaction"},{name: "Retention Rate", value: 78, desc: "Employee retention annually"},{name: "Training Coverage", value: 80, desc: "Percentage of employees trained"}] },
+    { name: "Financial", kpis: [{name: "Budget Accuracy", value: 95, desc: "Forecast accuracy vs actuals"},{name: "Cash Flow Stability", value: 88, desc: "Maintaining consistent cash flow"},{name: "Expense Control", value: 82, desc: "Efficiency in controlling expenses"},{name: "Financial Reporting Timeliness", value: 90, desc: "Reports delivered on schedule"}] },
+    { name: "Legal", kpis: [{name: "Contract Compliance", value: 92, desc: "Adherence to contracts"},{name: "Regulatory Compliance", value: 85, desc: "Compliance with laws"},{name: "Legal Risk Mitigation", value: 80, desc: "Minimizing legal risks"}] },
+    { name: "Consultants", kpis: [{name: "Advice Quality", value: 85, desc: "Value of guidance provided"},{name: "Client Satisfaction", value: 80, desc: "Feedback from internal teams"}] },
+    { name: "Marketing", kpis: [{name: "Campaign ROI", value: 72, desc: "Return on campaigns"},{name: "Social Media Reach", value: 80, desc: "Engagement on social platforms"},{name: "Market Research Insights", value: 78, desc: "Accuracy of market analysis"},{name: "Content Production", value: 85, desc: "Quantity and quality of content"}] },
+    { name: "Sales", kpis: [{name: "Revenue Growth", value: 80, desc: "Increase in revenue"},{name: "Conversion Rate", value: 68, desc: "Leads converted to sales"},{name: "Customer Acquisition Cost", value: 75, desc: "Cost per new customer"},{name: "Sales Pipeline Coverage", value: 82, desc: "Pipeline health"}] },
+    { name: "Customer Support", kpis: [{name: "Customer Satisfaction", value: 90, desc: "CSAT score"},{name: "Resolution Time", value: 75, desc: "Average time to resolve issues"},{name: "First Contact Resolution", value: 80, desc: "Issues resolved on first contact"}] },
+    { name: "PR", kpis: [{name: "Media Coverage", value: 70, desc: "Mentions in media"},{name: "Brand Sentiment", value: 82, desc: "Positive public perception"},{name: "Event Impact", value: 75, desc: "Effectiveness of PR events"}] },
+    { name: "UX & Product Development", kpis: [{name: "User Satisfaction", value: 85, desc: "Feedback on usability"},{name: "Prototype Speed", value: 78, desc: "Speed of prototype development"},{name: "Design Consistency", value: 82, desc: "Consistency across products"}] },
+    { name: "Product Support", kpis: [{name: "Testing Coverage", value: 78, desc: "Percentage of features tested"},{name: "Issue Resolution", value: 80, desc: "Supporting other teams effectively"},{name: "Documentation Quality", value: 85, desc: "Accuracy of product docs"}] },
+    { name: "Machine Vision Dev", kpis: [{name: "Model Accuracy", value: 92, desc: "Performance of vision models"},{name: "Processing Speed", value: 88, desc: "Time to process images"},{name: "Algorithm Innovation", value: 80, desc: "New approaches developed"}] },
+    { name: "Algorithm Dev", kpis: [{name: "Algorithm Efficiency", value: 88, desc: "Optimization of algorithms"},{name: "Code Quality", value: 85, desc: "Maintainable and clean code"},{name: "Bug Rate", value: 90, desc: "Low defect rate in algorithms"}] },
+    { name: "Application Dev", kpis: [{name: "App Stability", value: 85, desc: "Application crash rate low"},{name: "Feature Completion", value: 80, desc: "Features delivered on time"},{name: "User Feedback", value: 82, desc: "Positive user ratings"}] },
+    { name: "Financial Dev", kpis: [{name: "Security Compliance", value: 95, desc: "Adherence to financial regulations"},{name: "Transaction Accuracy", value: 90, desc: "Correctness of financial transactions"},{name: "System Performance", value: 88, desc: "Efficiency of financial systems"}] },
+    { name: "DevOps", kpis: [{name: "Deployment Success", value: 90, desc: "Successful deployments percentage"},{name: "Automation Coverage", value: 75, desc: "Extent of CI/CD automation"},{name: "System Reliability", value: 85, desc: "Stable infrastructure"}] },
+    { name: "Data", kpis: [{name: "Insight Accuracy", value: 80, desc: "Data analysis accuracy"},{name: "Report Timeliness", value: 85, desc: "Reports delivered on time"},{name: "Data Quality", value: 88, desc: "Clean and usable data"}] },
+    { name: "Tech Support", kpis: [{name: "Issue Resolution", value: 88, desc: "Support ticket resolution"},{name: "Response Time", value: 82, desc: "Average response time"},{name: "Knowledge Base Updates", value: 80, desc: "Accuracy of internal documentation"}] },
+    { name: "Security", kpis: [{name: "Threat Detection", value: 92, desc: "Identifying security threats"},{name: "Response Time", value: 87, desc: "Time to mitigate incidents"},{name: "Compliance Audits", value: 85, desc: "Passing security audits"}] },
+    { name: "Network", kpis: [{name: "Network Uptime", value: 99, desc: "Network operational time"},{name: "Latency", value: 85, desc: "Network response speed"},{name: "Bandwidth Utilization", value: 80, desc: "Efficiency of network usage"}] },
+    { name: "Equipment Supply", kpis: [{name: "Procurement Efficiency", value: 80, desc: "Speed of acquiring equipment"},{name: "Maintenance Timeliness", value: 75, desc: "On-time maintenance activities"},{name: "Equipment Availability", value: 85, desc: "Percentage of available equipment"}] }
+];
+
+// --- توابع ---
+function getColor(value){ 
+    if(value >= 85) return "green"; 
+    if(value >= 70) return "yellow"; 
+    return "red"; 
+}
+
+function createCard(team){
+    const card=document.createElement("div"); 
+    card.className="card";
+    const teamName=document.createElement("div"); 
+    teamName.className="team-name"; 
+    teamName.textContent=team.name; 
+    card.appendChild(teamName);
+
+    const container=document.createElement("div"); 
+    container.className="kpi-container";
+
+    team.kpis.forEach(kpi=>{
+        const kpiDiv=document.createElement("div"); 
+        kpiDiv.className="kpi"; 
+        kpiDiv.innerHTML=`
+            <div class="kpi-name">${kpi.name}</div>
+            <div class="kpi-value">${kpi.value}%</div>
+            <div class="progress-bar">
+                <div class="progress ${getColor(kpi.value)}" style="width:${kpi.value}%"></div>
+            </div>
+            <div class="tooltip">${kpi.desc}</div>
+        `;
+        container.appendChild(kpiDiv);
+    });
+
+    card.appendChild(container); 
+    return card;
+}
+
+// --- اضافه کردن کارت‌ها ---
+const topRow=document.getElementById("topRow"); 
+boardAndCLevel.forEach(team=>topRow.appendChild(createCard(team)));
+
+const teamsRow=document.getElementById("teamsRow"); 
+otherTeams.forEach(team=>teamsRow.appendChild(createCard(team)));
+</script>
+
+</body>
+</html>
