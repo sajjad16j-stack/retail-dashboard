@@ -3,39 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Structure Layers with Proper CTO</title>
+<title>Team Structure Layers</title>
+
 <style>
   html, body {
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
     background: #f0f2f5;
-    display: flex;
     justify-content: center;
     align-items: flex-start;
     overflow-x: auto;
     height: 100%;
+ display: flex;
   }
 
   .cake {
+margin:50px;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* فاصله بین لایه‌ها */
-    padding: 100px 20px;
+    gap: 10px;
     width: 1200px;
     box-sizing: border-box;
   }
 
   .layer {
     display: grid;
-    gap: 10px; /* فاصله بین بلوک‌ها */
+    gap: 10px;
     width: 100%;
     align-items: center;
-    grid-auto-rows: 70px; /* ارتفاع ثابت بلوک‌ها */
+    grid-auto-rows: 70px;
   }
 
   .manager {
-    padding: 25px 15px; /* padding داخلی همان حالت قبل */
+    padding: 25px 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,13 +45,12 @@
     border-radius: 12px;
     background: #dfe4ea;
     box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-    min-width: 70px; /* هم عرض سایر مدیرها */
-    
+    min-width: 70px;
     text-align: center;
   }
 
   .block {
-    padding: 25px 10px; /* padding داخلی همان حالت قبل */
+    padding: 25px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,11 +58,8 @@
     font-weight: bold;
     border-radius: 12px;
     box-shadow: 0 5px 12px rgba(0,0,0,0.25);
-    transition: transform 0.3s;
     font-size: 1rem;
   }
-
- 
 
   .layer-0 .block { background: #ff6b6b; } 
   .layer-1 .block { background: #ffa502; } 
@@ -72,13 +69,12 @@
   .layer-5 .block { background: #ff4757; } 
   .layer-6 .block { background: #57606f; }
 
-  /* CTO عمودی با متن افقی */
   .cto-block {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px; /* هم عرض سایر مدیرها */
-    height: calc(3 * 70px + 2 * 10px); /* مجموع ارتفاع سه لایه + gap بین لایه‌ها */
+    width: 100px;
+    height: calc(3 * 70px + 2 * 10px);
     background: #dfe4ea;
     color: #333;
     font-weight: bold;
@@ -87,23 +83,44 @@
     text-align: center;
   }
 
-  /* کانتینر بلوک‌های سه لایه آخر */
   .last-three-layers {
     display: grid;
-    gap: 10px; /* فاصله بین بلوک‌ها در سه لایه آخر */
+    gap: 10px;
   }
 
+  /* ===== Descriptions ===== */
+  .descriptions {
+    width: 1200px;
+    background: white;
+    margin: 20px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    line-height: 1.9;
+    box-sizing: border-box;
+
+  }
+
+  .descriptions h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+
+  .desc {
+    margin-bottom: 14px;
+  }
 </style>
 </head>
+
 <body>
+
+<!-- ================= CHART (ORIGINAL - UNCHANGED) ================= -->
 <div class="cake">
 
-  <!-- لایه 0 -->
   <div class="layer layer-0" style="grid-template-columns: 1fr;">
     <div class="block">Board of Directors</div>
   </div>
 
-  <!-- لایه 1 -->
   <div class="layer layer-1" style="grid-template-columns: auto 1fr 1fr 1fr 1fr;">
     <div class="manager">CEO</div>
     <div class="block">HR</div>
@@ -112,7 +129,6 @@
     <div class="block">Consultants</div>
   </div>
 
-  <!-- لایه 2 -->
   <div class="layer layer-2" style="grid-template-columns: auto 2fr 3fr 3fr 2fr;">
     <div class="manager">CMO</div>
     <div class="block">Marketing</div>
@@ -121,34 +137,29 @@
     <div class="block">PR</div>
   </div>
 
-  <!-- لایه 3 -->
   <div class="layer layer-3" style="grid-template-columns: auto 8fr 2fr;">
     <div class="manager">CPO</div>
     <div class="block">UX & Product Development</div>
     <div class="block">Product Support</div>
   </div>
 
-  <!-- لایه 4 تا 6 با CTO عمودی -->
   <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px;">
-    <!-- CTO عمودی -->
     <div class="cto-block">CTO</div>
 
-    <!-- بلوک‌ها درون یک کانتینر Grid عمودی با gap یکسان -->
     <div class="last-three-layers">
-      <!-- لایه 4 -->
       <div class="layer layer-4" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap:10px;">
         <div class="block">Machine Vision Dev</div>
         <div class="block">Algorithm Dev</div>
         <div class="block">Application Dev</div>
         <div class="block">Financial Dev</div>
       </div>
-      <!-- لایه 5 -->
+
       <div class="layer layer-5" style="grid-template-columns: 4fr 4fr 2fr; gap:10px;">
         <div class="block">DevOps</div>
         <div class="block">Data</div>
         <div class="block">Tech Support</div>
       </div>
-      <!-- لایه 6 -->
+
       <div class="layer layer-6" style="grid-template-columns: 2fr 5fr 3fr; gap:10px;">
         <div class="block">Security</div>
         <div class="block">Network</div>
@@ -158,6 +169,45 @@
   </div>
 
 </div>
+<!-- ================= END CHART ================= -->
+
+<!-- ================= DESCRIPTIONS (UNDER CHART) ================= -->
+<div class="descriptions">
+  <h2>Team & Role Descriptions</h2>
+
+  <div class="desc"><strong>Board of Directors:</strong> Sets the organization’s strategic direction and oversees executive leadership.</div>
+  <div class="desc"><strong>CEO:</strong> Responsible for overall vision, strategy, and execution of the company.</div>
+  <div class="desc"><strong>HR:</strong> Manages hiring, performance evaluation, talent development, and organizational culture.</div>
+  <div class="desc"><strong>Financial:</strong> Oversees budgeting, financial planning, cash flow, and financial reporting.</div>
+  <div class="desc"><strong>Legal:</strong> Handles contracts, compliance, and legal risk management.</div>
+  <div class="desc"><strong>Consultants:</strong> Provide expert and independent advice to support strategic decisions.</div>
+
+  <div class="desc"><strong>CMO:</strong> Leads brand strategy, marketing direction, and customer acquisition.</div>
+  <div class="desc"><strong>Marketing:</strong> Executes campaigns, market research, and brand communication.</div>
+  <div class="desc"><strong>Sales:</strong> Converts leads into customers and drives revenue growth.</div>
+  <div class="desc"><strong>Customer Support:</strong> Resolves customer issues and ensures satisfaction.</div>
+  <div class="desc"><strong>PR:</strong> Manages public image and external communications.</div>
+
+  <div class="desc"><strong>CPO:</strong> Defines product vision, roadmap, and value delivery.</div>
+  <div class="desc"><strong>UX & Product Development:</strong> Designs and develops user-centered, scalable products.</div>
+  <div class="desc">
+    <strong>Product Support:</strong>
+Tests products and supports other teams with product knowledge.
+  </div>
+  <div class="desc"><strong>CTO:</strong> Leads technology strategy, architecture, and technical governance.</div>
+  <div class="desc"><strong>Machine Vision Dev:</strong> Develops computer vision and image processing solutions.</div>
+  <div class="desc"><strong>Algorithm Dev:</strong> Designs and optimizes intelligent algorithms.</div>
+  <div class="desc"><strong>Application Dev:</strong> Builds web, mobile, and enterprise applications.</div>
+  <div class="desc"><strong>Financial Dev:</strong> Develops secure financial software systems.</div>
+
+  <div class="desc"><strong>DevOps:</strong> Automates deployment pipelines and ensures system reliability.</div>
+  <div class="desc"><strong>Data:</strong> Analyzes data and produces actionable insights.</div>
+  <div class="desc"><strong>Tech Support:</strong> Resolves technical issues and supports operations.</div>
+
+  <div class="desc"><strong>Security:</strong> Protects systems, data, and infrastructure.</div>
+  <div class="desc"><strong>Network:</strong> Manages and optimizes network infrastructure.</div>
+  <div class="desc"><strong>Equipment Supply:</strong> Handles procurement and maintenance of technical equipment.</div>
+</div>
+
 </body>
 </html>
-
