@@ -1,4 +1,493 @@
 const companies =[
+{
+  "business_info": {
+    "name": "Alibaba Cloud Agriculture",
+    "theme_color": "#FF6A00",
+    "icon": "🌾",
+    "website": "https://www.alibabacloud.com",
+    "country": "China",
+    "industry": "Cloud / AgriTech",
+    "business_type": "B2B / Technology Services",
+    "description": "Intelligent agriculture solutions powered by Alibaba Cloud’s AI, big data and cloud computing to improve farming efficiency and decision-making",
+    "target_market": "Agriculture enterprises, farms, government & agribusiness ecosystems",
+    "stage": "Growth / Strategic Initiative"
+  },
+  "business_model_canvas": {
+    "key_partners": [
+      "Local agricultural governments",
+      "Farm equipment and IoT sensor providers",
+      "Data platform partners",
+      "Agricultural ecosystem partners"
+    ],
+    "key_activities": [
+      "Developing AI-powered farming algorithms",
+      "Integrating satellite, climate & soil data",
+      "Providing cloud infrastructure to agriculture players",
+      "Running digital agriculture pilot projects"
+    ],
+    "key_resources": [
+      "Alibaba Cloud computing infrastructure",
+      "AI & big data analytics",
+      "Agricultural data sources",
+      "Cloud services platform"
+    ],
+    "value_propositions": [
+      "Increase crop yields with data insights",
+      "Optimize resource use (water, fertilizer)",
+      "Enable predictive farm management",
+      "Connect farmers to digital marketplace ecosystems"
+    ],
+    "customer_relationships": [
+      "Technical support & implementation",
+      "Training & workshops on digital farming",
+      "Customer success & performance monitoring"
+    ],
+    "channels": [
+      "Alibaba Cloud platform",
+      "Partner agricultural platforms",
+      "B2B sales teams",
+      "Government & enterprise integrations"
+    ],
+    "customer_segments": [
+      "Large and medium farms",
+      "Agricultural cooperatives",
+      "Food production enterprises",
+      "Public sector agriculture departments"
+    ],
+    "cost_structure": [
+      "Cloud infrastructure & data costs",
+      "R&D for AI and analytics",
+      "Partner integration costs",
+      "Support & deployment expenses"
+    ],
+    "revenue_streams": [
+      "Cloud service subscriptions",
+      "Professional service fees",
+      "Data/analytics packages",
+      "Enterprise integration contracts"
+    ]
+  }
+},{
+  "business_info": {
+    "name": "Taobao Live",
+    "theme_color": "#FF4000",
+    "icon": "📺",
+    "website": "https://www.taobao.com",
+    "country": "China",
+    "industry": "E-commerce / Live Commerce",
+    "business_type": "B2C / Platform Feature",
+    "description": "Live-stream shopping and interactive commerce platform integrated into Taobao, enabling real-time sales via livestreaming",
+    "target_market": "Chinese online shoppers and merchants",
+    "stage": "Mature / Established feature"
+  },
+  "business_model_canvas": {
+    "key_partners": [
+      "Taobao marketplace merchants",
+      "KOLs / Key influencers / streamers",
+      "Brands and product sponsors",
+      "Payment & logistics partners"
+    ],
+    "key_activities": [
+      "Hosting livestream shopping sessions",
+      "Integrating interactive features",
+      "Attracting influencers and product partners",
+      "Driving traffic to Taobao listings"
+    ],
+    "key_resources": [
+      "Taobao user base",
+      "Live commerce technology",
+      "Content moderation & recommendation AI",
+      "Backend integration with listings"
+    ],
+    "value_propositions": [
+      "Real-time shopping experience",
+      "High-engagement product demos",
+      "Direct influence of KOLs on purchasing",
+      "Seamless checkout within livestream"
+    ],
+    "customer_relationships": [
+      "Interactive engagement (chat, likes)",
+      "Loyalty incentives",
+      "Push notifications",
+      "Taobao account ecosystem"
+    ],
+    "channels": [
+      "Taobao app",
+      "Taobao Live feature",
+      "Social media cross-promotion",
+      "Push notifications"
+    ],
+    "customer_segments": [
+      "Young Chinese consumers",
+      "Livestream commerce fans",
+      "Brands seeking influence sales",
+      "Taobao merchants wanting higher conversion"
+    ],
+    "cost_structure": [
+      "Content and platform tech ops",
+      "Marketing & influencer incentives",
+      "Tech and server costs",
+      "Moderation and compliance"
+    ],
+    "revenue_streams": [
+      "Commission on sales",
+      "Brand promotions & advertising",
+      "Livestream sponsorships",
+      "Taobao ecosystem fees"
+    ]
+  }
+},{
+  "business_info": {
+    "name": "Hongdian",
+    "theme_color": "#0078D7",
+    "icon": "📡",
+    "website": "https://hongdian.com",
+    "country": "China",
+    "industry": "IoT / Telecommunications",
+    "business_type": "B2B",
+    "founded_year": 1997,
+    "description": "Global provider of 5G, IoT and industrial connectivity solutions serving industries from smart cities to automation",
+    "target_market": "Enterprises in industrial, transportation, smart city & IoT verticals",
+    "stage": "Established"
+  },
+  "business_model_canvas": {
+    "key_partners": [
+      "Telecom carriers (China Mobile, etc.)",
+      "Industrial technology integrators",
+      "Edge computing & cloud partners",
+      "Enterprise customers"
+    ],
+    "key_activities": [
+      "Industrial IoT hardware design",
+      "Connectivity solution deployment",
+      "R&D in 5G, edge and AIoT",
+      "Global sales & support"
+    ],
+    "key_resources": [
+      "5G/IoT hardware products (routers, gateways)",
+      "R&D and engineering teams",
+      "Global distribution channels",
+      "Customer support & integration"
+    ],
+    "value_propositions": [
+      "Reliable industrial connectivity",
+      "Scalable IoT solutions",
+      "Edge computing and AI integration",
+      "Global deployment and support"
+    ],
+    "customer_relationships": [
+      "Enterprise sales and project support",
+      "Dedicated technical consulting",
+      "After-sales maintenance",
+      "Custom solution design"
+    ],
+    "channels": [
+      "Direct enterprise sales",
+      "Industry expos & partnerships",
+      "Online IoT marketplaces",
+      "Distributor networks"
+    ],
+    "customer_segments": [
+      "Smart city planners",
+      "Manufacturing automation firms",
+      "Healthcare & utilities",
+      "Transport & logistics providers"
+    ],
+    "cost_structure": [
+      "R&D and product development",
+      "Manufacturing & supply chain",
+      "Global support infrastructure",
+      "Marketing & trade events"
+    ],
+    "revenue_streams": [
+      "Hardware sales",
+      "Integration & service fees",
+      "IoT connectivity subscriptions",
+      "Enterprise contract sales"
+    ]
+  }
+},{
+  "business_info": {
+    "name": "Cainiao Network",
+    "theme_color": "#39B54A",
+    "icon": "🚚",
+    "website": "https://www.cainiao.com",
+    "country": "China",
+    "industry": "Logistics / Supply Chain",
+    "business_type": "B2B & B2C services",
+    "founded_year": 2013,
+    "description": "Alibaba’s smart logistics network delivering cross-border and domestic logistics and supply chain solutions globally",
+    "target_market": "E-commerce businesses & consumers worldwide",
+    "stage": "Mature"
+  },
+  "business_model_canvas": {
+    "key_partners": [
+      "Logistics carriers & partners",
+      "Customs & last-mile providers",
+      "E-commerce platforms (Taobao, Tmall)",
+      "Technology vendors"
+    ],
+    "key_activities": [
+      "Supply chain operations",
+      "Cross-border fulfillment",
+      "Data & logistics tech integration",
+      "Network expansion"
+    ],
+    "key_resources": [
+      "Global fulfillment network",
+      "Logistics technology & tracking",
+      "Partnership ecosystems",
+      "Data analytics capabilities"
+    ],
+    "value_propositions": [
+      "Fast, reliable logistics",
+      "Global delivery solutions",
+      "Smart supply chain tech",
+      "Integration with Alibaba ecosystem"
+    ],
+    "customer_relationships": [
+      "Real-time tracking & support",
+      "E-commerce fulfillment contracts",
+      "Data analytics services",
+      "API integrations"
+    ],
+    "channels": [
+      "API & platform integrations",
+      "Partnership agreements",
+      "Direct enterprise logistics deals"
+    ],
+    "customer_segments": [
+      "Online merchants",
+      "Cross-border sellers",
+      "Consumers needing delivery",
+      "Large logistics customers"
+    ],
+    "cost_structure": [
+      "Network infrastructure & fulfillment centers",
+      "Tech & software development",
+      "Partnership & carrier fees",
+      "Customer support & operations"
+    ],
+    "revenue_streams": [
+      "Logistics service fees",
+      "API & tech licensing",
+      "Fulfillment contracts",
+      "Value-added logistics services"
+    ]
+  }
+},
+{
+  "business_info": {
+    "name": "Yektanet Jarian",
+    "theme_color": "#1E88E5",
+    "icon": "📊",
+    "website": "https://yektanet.com",
+    "country": "Iran",
+    "industry": "AdTech / Digital Advertising",
+    "business_type": "B2B",
+    "description": "Programmatic and performance-based digital advertising network focused on native ads, content distribution and traffic monetization",
+    "target_market": "Publishers, brands, agencies, content platforms",
+    "stage": "Mature / Market leader in Iran"
+  },
+  "business_model_canvas": {
+    "key_partners": [
+      "Online publishers and media websites",
+      "Advertising agencies",
+      "Brands and performance marketers",
+      "Data & analytics partners"
+    ],
+    "key_activities": [
+      "Traffic monetization for publishers",
+      "Programmatic ad serving",
+      "Native advertising and content distribution",
+      "Campaign optimization and reporting"
+    ],
+    "key_resources": [
+      "AdTech platform and algorithms",
+      "Large publisher network",
+      "User behavior and traffic data",
+      "Sales and account management teams"
+    ],
+    "value_propositions": [
+      "High-quality native advertising",
+      "Effective traffic monetization for publishers",
+      "Performance-driven campaigns for advertisers",
+      "Localized Iranian digital ad ecosystem"
+    ],
+    "customer_relationships": [
+      "Dedicated account managers",
+      "Campaign dashboards and analytics",
+      "Optimization and consulting support",
+      "Long-term publisher relationships"
+    ],
+    "channels": [
+      "Direct sales team",
+      "Online self-service panels",
+      "Agency partnerships",
+      "Industry events"
+    ],
+    "customer_segments": [
+      "Large and mid-size publishers",
+      "Brands seeking performance marketing",
+      "Digital agencies",
+      "Content-driven platforms"
+    ],
+    "cost_structure": [
+      "Platform development & infrastructure",
+      "Revenue share with publishers",
+      "Sales & account management",
+      "Data & analytics operations"
+    ],
+    "revenue_streams": [
+      "Advertising campaign spend",
+      "Performance-based fees",
+      "Revenue share margin",
+      "Premium publisher services"
+    ]
+  }
+},
+{
+  "business_info": {
+    "name": "Digikala Magnet",
+    "theme_color": "#EF394E",
+    "icon": "🧲",
+    "website": "https://www.digikala.com/magnet",
+    "country": "Iran",
+    "industry": "Retail Media / AdTech",
+    "business_type": "B2B (Internal Marketplace Monetization)",
+    "description": "Retail media and advertising platform of Digikala enabling brands and sellers to promote products within Digikala ecosystem",
+    "target_market": "Brands, sellers, vendors on Digikala",
+    "stage": "Growth / Strategic business unit"
+  },
+  "business_model_canvas": {
+    "key_partners": [
+      "Digikala sellers and vendors",
+      "Brands and distributors",
+      "Marketing agencies",
+      "Internal Digikala data teams"
+    ],
+    "key_activities": [
+      "Sponsored product advertising",
+      "Search and display ad placements",
+      "Campaign management and analytics",
+      "Conversion and ROI optimization"
+    ],
+    "key_resources": [
+      "Digikala marketplace traffic",
+      "User purchase and behavior data",
+      "Retail media ad platform",
+      "Brand trust and scale"
+    ],
+    "value_propositions": [
+      "High-intent shopper targeting",
+      "Closed-loop attribution (ad to sale)",
+      "Native ads inside purchase journey",
+      "Boost visibility for sellers and brands"
+    ],
+    "customer_relationships": [
+      "Self-service advertiser dashboard",
+      "Performance reporting",
+      "Account management for large brands",
+      "Educational content for sellers"
+    ],
+    "channels": [
+      "Digikala seller panel",
+      "Direct sales for key accounts",
+      "Internal Digikala promotions",
+      "Agency collaborations"
+    ],
+    "customer_segments": [
+      "Marketplace sellers",
+      "Consumer brands",
+      "Distributors and importers",
+      "Large FMCG advertisers"
+    ],
+    "cost_structure": [
+      "Ad platform development",
+      "Data infrastructure",
+      "Sales & support teams",
+      "Internal traffic opportunity cost"
+    ],
+    "revenue_streams": [
+      "Sponsored listing fees",
+      "CPC / CPA advertising models",
+      "Brand campaign packages",
+      "Premium placement sales"
+    ]
+  }
+}
+,
+{
+  "business_info": {
+    "name": "Sequoia Capital",
+    "theme_color": "#0A1F44",
+    "icon": "🌲",
+    "website": "https://www.sequoiacap.com",
+    "country": "USA",
+    "industry": "Venture Capital / Investment",
+    "business_type": "B2B (Investment Firm)",
+    "founded_year": 1972,
+    "description": "Global venture capital firm investing in early to growth-stage technology companies",
+    "target_market": "Startups, founders, technology ventures",
+    "stage": "Mature / Legendary VC firm"
+  },
+  "business_model_canvas": {
+    "key_partners": [
+      "Limited Partners (LPs)",
+      "Founders and startup teams",
+      "Co-investment funds",
+      "Advisors and industry experts"
+    ],
+    "key_activities": [
+      "Startup sourcing and evaluation",
+      "Capital investment and portfolio building",
+      "Founder mentorship and strategic guidance",
+      "Exit management (IPO, acquisition)"
+    ],
+    "key_resources": [
+      "Investment capital",
+      "Brand reputation and network",
+      "Partner expertise",
+      "Portfolio ecosystem"
+    ],
+    "value_propositions": [
+      "Smart capital with strategic support",
+      "Access to elite founder network",
+      "Long-term partnership mindset",
+      "Operational and scaling expertise"
+    ],
+    "customer_relationships": [
+      "High-touch founder relationships",
+      "Board participation",
+      "Long-term LP partnerships",
+      "Community and knowledge sharing"
+    ],
+    "channels": [
+      "Founder referrals",
+      "Startup ecosystem presence",
+      "Content and thought leadership",
+      "Global offices and networks"
+    ],
+    "customer_segments": [
+      "Early-stage startups",
+      "Growth-stage tech companies",
+      "Entrepreneurs seeking smart capital",
+      "Institutional investors (LPs)"
+    ],
+    "cost_structure": [
+      "Partner and analyst compensation",
+      "Operational and legal costs",
+      "Portfolio support expenses",
+      "Global office operations"
+    ],
+    "revenue_streams": [
+      "Equity appreciation",
+      "Exit returns (IPO & M&A)",
+      "Management fees",
+      "Carried interest"
+    ]
+  }
+},
    {
     "business_info": {
       "name": "Okala",
