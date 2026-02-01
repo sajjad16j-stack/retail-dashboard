@@ -54,8 +54,6 @@ input.count-input { width:50px; font-size:12px; text-align:center; padding:2px; 
   <button class="tab active" data-tab="hr">Human Resources</button>
   <button class="tab" data-tab="capital">Capital</button>
   <button class="tab" data-tab="operational">Operational</button>
-  <button class="tab" data-tab="consumable">Consumable</button>
-  <button class="tab" data-tab="marketing">Marketing</button>
   <button class="tab" data-tab="income">Income</button>
   <button class="tab" data-tab="summary">Summary</button>
 </div>
@@ -84,8 +82,6 @@ input.count-input { width:50px; font-size:12px; text-align:center; padding:2px; 
 <script src="data-hr.js"></script>
 <script src="data-capital.js"></script>
 <script src="data-operational.js"></script>
-<script src="data-consumable.js"></script>
-<script src="data-marketing.js"></script>
 <script src="data-income.js"></script>
 
 <script>
@@ -139,7 +135,7 @@ function renderSummary(){
   div.style.padding="10px"; div.style.fontSize="16px";
   let html = "<table style='font-size:14pt'><tr><th>Category</th><th>Total Amount</th></tr>";
   let totalCosts=0, incomeTotal=0;
-  for(const tab of ["hr","capital","operational","consumable","marketing"]){
+  for(const tab of ["hr","capital","operational"]){
     const tabTotal = TAB_STATE[tab].reduce((sum,item)=> item.active? sum+item.data.reduce((s,v)=>s+v*item.unitCost,0):sum ,0);
     totalCosts += tabTotal;
     html+=`<tr><td>${tab}</td><td style='color:red'>$${Math.round(tabTotal).toLocaleString()}</td></tr>`;
