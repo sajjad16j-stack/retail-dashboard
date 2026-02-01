@@ -1,10 +1,10 @@
-TAB_DATA.hr={
+TAB_DATA.hr = {
   items: [
 
     {
-      title: "CTO / Tech Lead",
-      color: "#1e40af",
-      unitCost: 5000,
+      title: "CEO",
+      color: "#0f172a",
+      unitCost: 2000,
       countByMonth: [
         1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1
@@ -12,153 +12,18 @@ TAB_DATA.hr={
     },
 
     {
-      title: "Backend Engineer",
-      color: "#3b82f6",
-      unitCost: 3500,
+      title: "Consultant",
+      color: "#1e293b",
+      unitCost: 1300,
       countByMonth: [
-        1,1,2,2,3,3,4,4,5,5,6,6,
-        6,7,7,8,8,8,8,9,9,9,9,9
-      ]
-    },
-
-    {
-      title: "Frontend Engineer",
-      color: "#2563eb",
-      unitCost: 3200,
-      countByMonth: [
-        0,1,1,2,2,3,3,4,4,4,5,5,
-        5,5,6,6,6,6,6,6,6,6,6,6
-      ]
-    },
-
-    {
-      title: "Mobile Engineer",
-      color: "#1d4ed8",
-      unitCost: 3300,
-      countByMonth: [
-        0,0,0,1,1,1,2,2,2,2,3,3,
-        3,3,3,3,3,3,3,3,3,3,3,3
-      ]
-    },
-
-    {
-      title: "QA / Automation Engineer",
-      color: "#60a5fa",
-      unitCost: 2800,
-      countByMonth: [
-        0,0,0,0,1,1,1,2,2,2,2,3,
-        3,3,3,3,3,3,3,3,3,3,3,3
-      ]
-    },
-
-    {
-      title: "DevOps / Cloud Engineer",
-      color: "#0ea5e9",
-      unitCost: 4200,
-      countByMonth: [
-        0,0,1,1,1,1,2,2,2,2,2,2,
-        2,2,3,3,3,3,3,3,3,3,3,3
-      ]
-    },
-
-    {
-      title: "Product Manager",
-      color: "#f59e0b",
-      unitCost: 4500,
-      countByMonth: [
-        0,1,1,1,1,1,1,1,2,2,2,2,
-        2,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Product Designer (UI/UX)",
-      color: "#fbbf24",
-      unitCost: 3200,
-      countByMonth: [
-        0,0,1,1,1,1,2,2,2,2,2,2,
-        2,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Data Engineer",
-      color: "#10b981",
-      unitCost: 4000,
-      countByMonth: [
-        0,0,0,0,0,1,1,1,1,2,2,2,
-        2,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Data Scientist",
-      color: "#059669",
-      unitCost: 4200,
-      countByMonth: [
-        0,0,0,0,0,0,0,1,1,1,1,1,
-        1,1,1,1,1,1,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Growth / Performance Marketer",
-      color: "#ec4899",
-      unitCost: 3000,
-      countByMonth: [
-        0,0,0,0,0,0,1,1,1,1,1,1,
-        1,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Sales Executive",
-      color: "#db2777",
-      unitCost: 2800,
-      countByMonth: [
-        0,0,0,0,0,0,0,1,1,2,2,3,
-        3,4,4,4,5,5,6,6,6,6,6,6
-      ]
-    },
-
-    {
-      title: "Customer Support Specialist",
-      color: "#9333ea",
-      unitCost: 2200,
-      countByMonth: [
-        0,0,0,0,0,0,0,0,1,1,2,2,
-        3,3,4,4,5,5,6,6,6,6,6,6
-      ]
-    },
-
-    {
-      title: "Operations / People Ops",
-      color: "#64748b",
-      unitCost: 2600,
-      countByMonth: [
-        0,0,0,0,0,0,0,0,0,1,1,1,
-        1,1,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Finance / Accounting",
-      color: "#475569",
-      unitCost: 3000,
-      countByMonth: [
-        0,0,0,0,0,0,0,0,0,0,1,1,
+        2,2,2,2,2,2,2,2,2,2,2,2,
         1,1,1,1,1,1,1,1,1,1,1,1
       ]
-    }
-
-  ]
-};const resourceData = {
-  items: [
-
-    {
-      title: "CTO / Tech Lead",
-      color: "#1e40af",
-      unitCost: 5000,
+    },
+ {
+      title: "CPO",
+      color: "#f59e0b",
+      unitCost: 2200,
       countByMonth: [
         1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1
@@ -166,145 +31,165 @@ TAB_DATA.hr={
     },
 
     {
-      title: "Backend Engineer",
-      color: "#3b82f6",
-      unitCost: 3500,
+      title: "CTO",
+      color: "#1e40af",
+      unitCost: 1900,
       countByMonth: [
-        1,1,2,2,3,3,4,4,5,5,6,6,
-        6,7,7,8,8,8,8,9,9,9,9,9
+        1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1
       ]
     },
 
+   
     {
-      title: "Frontend Engineer",
-      color: "#2563eb",
-      unitCost: 3200,
-      countByMonth: [
-        0,1,1,2,2,3,3,4,4,4,5,5,
-        5,5,6,6,6,6,6,6,6,6,6,6
-      ]
-    },
-
-    {
-      title: "Mobile Engineer",
-      color: "#1d4ed8",
-      unitCost: 3300,
-      countByMonth: [
-        0,0,0,1,1,1,2,2,2,2,3,3,
-        3,3,3,3,3,3,3,3,3,3,3,3
-      ]
-    },
-
-    {
-      title: "QA / Automation Engineer",
-      color: "#60a5fa",
-      unitCost: 2800,
-      countByMonth: [
-        0,0,0,0,1,1,1,2,2,2,2,3,
-        3,3,3,3,3,3,3,3,3,3,3,3
-      ]
-    },
-
-    {
-      title: "DevOps / Cloud Engineer",
-      color: "#0ea5e9",
-      unitCost: 4200,
-      countByMonth: [
-        0,0,1,1,1,1,2,2,2,2,2,2,
-        2,2,3,3,3,3,3,3,3,3,3,3
-      ]
-    },
-
-    {
-      title: "Product Manager",
-      color: "#f59e0b",
-      unitCost: 4500,
-      countByMonth: [
-        0,1,1,1,1,1,1,1,2,2,2,2,
-        2,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Product Designer (UI/UX)",
-      color: "#fbbf24",
-      unitCost: 3200,
-      countByMonth: [
-        0,0,1,1,1,1,2,2,2,2,2,2,
-        2,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Data Engineer",
-      color: "#10b981",
-      unitCost: 4000,
-      countByMonth: [
-        0,0,0,0,0,1,1,1,1,2,2,2,
-        2,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Data Scientist",
-      color: "#059669",
-      unitCost: 4200,
-      countByMonth: [
-        0,0,0,0,0,0,0,1,1,1,1,1,
-        1,1,1,1,1,1,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Growth / Performance Marketer",
+      title: "CMO",
       color: "#ec4899",
-      unitCost: 3000,
+      unitCost: 1600,
+      countByMonth: [
+        1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1
+      ]
+    },
+
+    {
+      title: "Sales & Marketing",
+      color: "#db2777",
+      unitCost: 450,
+      countByMonth: [
+        1,2,3,4,4,4,6,8,10,10,10,10,
+        10,10,10,10,10,10,10,10,10,10,10,10
+      ]
+    },
+
+    {
+      title: "Customer Support",
+      color: "#9333ea",
+      unitCost: 200,
+      countByMonth: [
+        0,0,0,0,0,0,2,2,2,2,2,2,
+        2,2,2,2,2,2,2,2,2,2,2,2
+      ]
+    },
+
+    {
+      title: "Finance & Contracts",
+      color: "#475569",
+      unitCost: 650,
       countByMonth: [
         0,0,0,0,0,0,1,1,1,1,1,1,
-        1,2,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Sales Executive",
-      color: "#db2777",
-      unitCost: 2800,
-      countByMonth: [
-        0,0,0,0,0,0,0,1,1,2,2,3,
-        3,4,4,4,5,5,6,6,6,6,6,6
-      ]
-    },
-
-    {
-      title: "Customer Support Specialist",
-      color: "#9333ea",
-      unitCost: 2200,
-      countByMonth: [
-        0,0,0,0,0,0,0,0,1,1,2,2,
-        3,3,4,4,5,5,6,6,6,6,6,6
-      ]
-    },
-
-    {
-      title: "Operations / People Ops",
-      color: "#64748b",
-      unitCost: 2600,
-      countByMonth: [
-        0,0,0,0,0,0,0,0,0,1,1,1,
-        1,1,2,2,2,2,2,2,2,2,2,2
-      ]
-    },
-
-    {
-      title: "Finance / Accounting",
-      color: "#475569",
-      unitCost: 3000,
-      countByMonth: [
-        0,0,0,0,0,0,0,0,0,0,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1
+      ]
+    },
+
+    {
+      title: "HR & Office",
+      color: "#64748b",
+      unitCost: 450,
+      countByMonth: [
+        1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1
+      ]
+    },
+
+    {
+      title: "CEO Assistant & PR",
+      color: "#334155",
+      unitCost: 200,
+      countByMonth: [
+        0,0,0,0,0,0,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1
+      ]
+    },
+
+    {
+      title: "Office Services",
+      color: "#78716c",
+      unitCost: 200,
+      countByMonth: [
+        1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1
+      ]
+    },
+
+    {
+      title: "DevOps Engineer",
+      color: "#0ea5e9",
+      unitCost: 1000,
+      countByMonth: [
+        2,2,2,2,3,3,3,3,4,4,4,4,
+        3,3,3,3,3,3,3,3,3,3,3,3
+      ]
+    },
+
+    {
+      title: "Network & Hardware",
+      color: "#22c55e",
+      unitCost: 450,
+      countByMonth: [
+        2,2,2,2,2,2,2,2,2,2,2,2,
+        2,2,2,2,2,2,2,2,2,2,2,2
+      ]
+    },
+
+    {
+      title: "Product Owner",
+      color: "#f97316",
+      unitCost: 1000,
+      countByMonth: [
+        4,4,4,4,4,4,4,4,4,4,4,4,
+        3,3,3,3,3,3,3,3,3,3,3,3
+      ]
+    },
+
+    {
+      title: "UX Designer",
+      color: "#fbbf24",
+      unitCost: 1000,
+      countByMonth: [
+        4,4,4,2,2,2,2,2,2,2,2,2,
+        0,0,0,0,0,0,0,0,0,0,0,0
+      ]
+    },
+
+    {
+      title: "Product Assistant",
+      color: "#fde047",
+      unitCost: 450,
+      countByMonth: [
+        0,0,0,0,0,0,1,3,3,4,4,4,
+        0,0,0,0,0,0,0,0,0,0,0,0
+      ]
+    },
+
+    {
+      title: "Computer Vision",
+      color: "#10b981",
+      unitCost: 1000,
+      countByMonth: [
+        4,6,6,7,7,7,7,7,7,7,7,7,
+        3,3,3,3,3,3,3,3,3,3,3,3
+      ]
+    },
+
+    {
+      title: "Software Engineer",
+      color: "#2563eb",
+      unitCost: 1000,
+      countByMonth: [
+        11,12,13,18,18,18,20,20,20,20,20,20,
+        3,3,3,3,3,3,3,3,3,3,3,3
+      ]
+    },
+
+    {
+      title: "Data & Algorithm",
+      color: "#059669",
+      unitCost: 1000,
+      countByMonth: [
+        3,4,4,4,4,4,4,4,4,4,4,4,
+        2,2,2,2,2,2,2,2,2,2,2,2
       ]
     }
 
   ]
-
 };
